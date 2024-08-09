@@ -1,0 +1,65 @@
+\input{preamble}
+
+\begin{columns}
+\column{}
+
+%Bloecke mit Inhalt
+% \block[bodyverticalshift=0mm]{}{
+\block{Einleitung}{
+    Als SHAZAM ist eine Anwendung bekannt, die Musiktitel in Sekundenschnelle anhand von ebenso kurzen Tonaufnahmen erkennt. Der Kern des Algorithmus gleicht hierbei grob gesagt die Struktur der Aufnahme mit einer Datenbank ab, die mit Millionen von Songs gefüttert wurde und liefert den besten Treffer als Ergebnis.
+
+    Doch wäre das auch für Proteine möglich?\\
+
+    Aktuell sind Alignments von den Aminosäureketten eine sehr populäre und effiziente Methode, um Proteine und deren funktionsgleiche Verwandte über Sequenzähnlichkeit zu erkennen. Bekannte Tools hierfür sind bspw. BLAST und DIAMOND.\
+    Problem hierbei ist die Degeneriertheit des genetischen Codes und die nahezu endlosen Sequenzvarianten, die nach ihrer Faltung in Tertiärstruktur dennoch funktionsgleiche Proteine bilden, sodass es viele Sequenzen gibt, die nur eine zufällige Ähnlichkeit aufweisen, aber eigentlich zu einem Protein anderer Funktion gehören. Es gilt das Basiskonzept von Struktur und Funktion, dennoch wird hier keine Ähnlichkeit auf Basis der Struktur festgestellt, da die letztendliche Tertiärstruktur schwer vorhersehbar ist.
+    Wenn also SHAZAM Musik auf Basis struktureller Information erkennt, wäre es doch vielleicht möglich, dass der zugrundeliegende Algorithmus auch in Proteinsequenzen strukturelle Information findet, die spezifisch für das Protein und vielleicht auch seine Verwandten ist.
+}
+\end{columns}
+\begin{columns}
+    
+    % http://dx.doi.org/10.1007/BF01025492 - Kidera
+    \column{0.7}
+    \block{Methode}{
+        % Erhalt numerischer Vektoren
+        \textbf{Vorbereitung:} Voraussetzung für den Algorithmus ist ein numerischer Vektor, so wie es das Spektrum einer Tonspur bei SHAZAM darstellt. Um dies im proteinischen Kontext zu erreichen, wird in \protfin\ auf sogenannte Kidera-Faktoren zurückgegriffen. Diese Faktoren stammen aus einem Forschungsprojekt von Akinori Kidera, welches 1985 publiziert wurde. Inhalt des Projekts war die statistische Faktorenanalyse von 188 physikalischen Eigenschaften der 20 natürlichen Aminosäuren zur Ermittlung von 10 dieser Eigenschaften, durch die die anderen aufgrund hoher Korrelation erklärt werden können. So sind z.B. die Hydrophobizität einer Aminosäure oder deren Tendenz, eine Helix zu bilden, zwei dieser 10 Kidera-Faktoren. Kurzum kann nun also eine Aminosäuresequenz pro Faktor in einen numerischen Vektor übersetzt werden, wobei ein höherer absoluter Wert für mehr Relevanz des Faktors steht.
+
+        % rechts hiervon der Plot mit Fenstern, ConstMap, edged ConstMap
+            % Sammeln struktureller Information
+            \vspace{2.25mm}
+            \textbf{Sammeln von Strukturdaten:} Das Extrahieren von struktureller Information aus den erhaltenen Vektoren basiert auf der Short-Time-Fourier-Transformation (STFT), welche den Vektor intervallweise auf periodische Signale untersucht, wie z.B. dem wiederholten Auftreten von hydrophoben Aminosäuren im gleichen Abstand oder in der Musik ein Refrain oder dem Rhythmus. Die Frequenzen der auffälligsten Signale werden ausgewählt, sodass über alle Intervalle eine sogenannte Constellation-Map entsteht.
+
+            % Hashing
+            \vspace{2.25mm}
+            \textbf{Hashing:} Die erhaltene Map wird nun elementweise gehashed, um einen effizienten Vergleich mit anderen Maps zu ermöglichen. Um das zu erzielen wird jede ausgewählte Frequenz mit jeder weiteren Frequenz der Folgeintervalle gepaart. Es werden also Kanten gebildet, wodurch die Map zu einem Graphen wird. Jede dieser Kanten bildet nun einen Hash, also einer Kombination aus den beiden Frequenzen/Kantenenden und der Kantenlänge. In einer Hashmap, also der Datenbank, wird sich folgend für den Hash die Position der Kante in der Constellation-Map gemerkt. Sollte ein Hash mehrfach vorkommen, so gilt dies nur für die letzte Position.
+    }
+\end{columns}
+\begin{columns}
+        \column{0.3}
+        \column{0.7}
+        \block{Matching}{
+        % hierzu ein Plot zur Veranschaulichung der Offsets
+            % Scoring/Map-Vergleich
+            Nachdem eine Datenbank mit den Hashes verschiedener Trainings-Proteine (TP) trainiert wurde, wird sie verwendet, um Proteine zu erkennen. Dazu werden für die jeweilige Eingabesequenz von Aminosäuren die Hashes gebildet und deren Positionen gespeichert. Um nun die Ähnlichkeit der Constellation-Map der Eingabe mit denen der TP zu bestimmen, werden pro Eingabe-Hash die Differenzen zwischen dessen Position mit den Positionen der trainierten Hashes gebildet und global pro Protein gezählt. Diese Differenzen repräsentieren den Abstand der Kante in der Eingabe-Map zur Kante der jeweiligen TP-Map, also wie weit die Eingabe-Map verschoben wäre, sollte es sich bei dem TP um das Original handeln. Auf diese Weise sammeln sich pro TP mehrere solcher potentiellen Abstände, wobei nun der Abstand, der am häufigsten aufgetreten ist, offensichtlich die meiste Übereinstimmung in den Kanten zeigt. Diese Tatsache qualifiziert diese Maximalanzahl als geeigneten Score (S1) für ein Match.
+
+            Da es große Proteine mit sehr langen Aminosäuresequenzen kürzere Sequenzen kleinerer funktionsungleicher Proteine enthalten können, reicht der ermittelte Score alleine nicht aus, da in diesem Fall sehr viele Kanten der Eingabe-Map übereinstimmen würden, sodass trotz Mis-Match der nahezu maximale Score erreicht werden würde.
+
+            Um das zu umgehen, wird der Jaccard-Similarity-Index (JSI) verwendet, einem Maß, das die Übereinstimmung zweier Mengen A und B wie folgt bewertet:
+            $$JSI(A, B)\frac{|A \cap B|}{|A \cup B|}$$
+            Dieser Index nimmt einen Wert von 0 an, wenn beide Mengen disjunkt sind, und nähert sich der 1 je größer die Schnittmenge ist. Im Fall des Vergleichs zweier Constellation-Maps, also zwei Hash-Mengen, wird hier bewertet, wie viele Kanten sich die beiden Maps positionsunabhängig teilen. Durch diese Unabhängigkeit reicht der JSI alleine nicht als Score aus, sodass nur in Kombination/Multiplikation mit dem S1 ein robuster Score entsteht, da beide zusammen ihre Schwächen aufheben.
+    }
+\end{columns}
+\begin{columns}
+    \column{.7}
+    \block{Experimente}{
+        Um den Algorithmus von Musik auf Proteine abzustimmen wurden bei der Erstellung der Constellation-Map verschiedene Parameter für die STFT durchprobiert, nämlich die Intervallgröße, den Abstand, wie weit das Intervall weitergeschoben wird, und der Anzahl an maximal selektierten Frequenzen. Als Trainingsdaten wurden circa 40.000 Pflanzenproteine verwendet und nachfolgend 217 möglichst funktionsverschiedene davon als Eingabe für das Matching
+    }
+    \column{.3}
+\end{columns}
+\begin{columns}
+    \column{}
+    \block{Ausblick}{
+        Die Experimente haben gezeigt, dass die Original-Proteine erkannt wurden, was 
+    }
+\end{columns}
+
+\end{document}

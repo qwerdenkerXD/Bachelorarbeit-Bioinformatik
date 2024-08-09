@@ -1,0 +1,23 @@
+\documentclass[index=totoc, bibliography=totoc, listof=totoc, paper=a4, fontsize=11pt]{scrartcl}
+
+\input{commands}
+
+\usepackage[english, ngerman]{babel}
+\usepackage[backend=biber,style=alphabetic,]{biblatex}
+\usepackage[utf8]{inputenc}  % necessary for csvsimple to read files in utf-8
+\usepackage{csvsimple}  % for generating tables from csv
+\usepackage{blindtext}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{ {results/} }
+\usepackage{hyperref}  % for clickable references when citing or referring to labels
+\usepackage{enumerate}
+\usepackage{subcaption}  % for subfigures
+\usepackage{listings}  % for Code listing
+\usepackage{xcolor}  % for colorful Code listing
+
+\bibliography{Literatur}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}

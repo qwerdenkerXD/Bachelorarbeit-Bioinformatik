@@ -1,0 +1,31 @@
+\input{Preamble}
+
+
+\begin{document}
+\pagenumbering{Roman}
+\maketitle
+\include{Abstract}
+\printbibliography
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\include{Einleitung}
+\include{Material_und_Methoden}
+\include{Ergebnisse}
+\include{Diskussion}
+
+\pagenumbering{gobble}
+\declaration{Eigenständigkeitserklärung}{
+  Ich bestätige, dass die eingereichte Arbeit eine Originalarbeit ist und von mir ohne weitere Hilfe verfasst wurde. Die Arbeit wurde nicht geprüft, noch wurde sie widerrechtlich veröffentlicht. Die eingereichte elektronische Version ist die einzige eingereichte Version.
+}
+\declaration{Erklärung zu Eigentum und Urheberrecht}{
+  Ich erkläre hiermit mein Einverständnis, dass die Technische Hochschule Bingen diese Arbeit Studierenden und interessierten Dritten zur Einsichtnahme zur Verfügung stellen und unter Nennung meines Namens (\Author) veröffentlichen darf.
+}
+
+\end{document}

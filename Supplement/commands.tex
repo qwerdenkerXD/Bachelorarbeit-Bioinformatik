@@ -1,0 +1,57 @@
+\newcommand{\Author}{Franz-Eric Sill}
+\newcommand{\Date}{26.08.2024}
+\newcommand{\Title}{prot-fin, ein toller Titel}
+\newcommand{\Subtitle}{}
+\newcommand{\Purpose}{Bachelorarbeit}
+\newcommand{\protfin}{prot-fin}
+
+\newcommand{\centerIt}[1]{\hspace*{\fill} #1 \hspace*{\fill}}  % used in table headers
+
+\renewcommand{\maketitle}{
+  \begin{titlepage}
+      \begin{center}
+          \begin{figure}
+              \centering
+              \includegraphics[width=1\textwidth]{unilogo.png}
+          \end{figure}
+          \Large
+          Technische Hochschule Bingen\\
+          Fachbereich 2 $-$ Technik, Informatik und Wirtschaft\\
+          Angewandte Bioinformatik (B.\ Sc.)\\
+          \vspace{0.5cm} 
+          
+          \Huge
+          \textbf{\Title}\\\hspace*{\fill}\par
+          \Large
+          \textbf{\Subtitle}
+          \vfill
+          
+          \LARGE
+          \Purpose\\
+          abgegeben am: \Date\\
+          von: \Author\\
+          \vspace{0.5cm}
+          Dozent: Prof.\ Dr.\ Asis Hallab\\
+      \end{center}
+
+  \end{titlepage}
+}
+
+\newcommand{\declaration}[2]{
+    \leavevmode%
+    \vfill\noindent
+    \begin{center}
+      \textbf{#1}
+    \end{center}
+    #2
+
+    \vspace*{4em}\noindent
+    \hfill%
+    \begin{tabular}[t]{c}
+      \rule{10em}{0.4pt}\\ Unterschrift
+    \end{tabular}%
+    \hfill%
+    \begin{tabular}[t]{c}
+      \rule{10em}{0.4pt}\\ Ort und Datum
+    \end{tabular}%
+    \hfill\strut\par}
