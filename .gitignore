@@ -1,0 +1,4 @@
+Supplement/*.*
+!Supplement/*.tex
+!Supplement/*.png
+!Supplement/*.bib
