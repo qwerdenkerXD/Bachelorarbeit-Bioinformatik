@@ -1,10 +1,10 @@
 \documentclass[index=totoc, bibliography=totoc, listof=totoc, paper=a4, fontsize=11pt]{scrartcl}
 
-\input{commands}
 
 \usepackage[english, ngerman]{babel}
 \usepackage[backend=biber,style=alphabetic,]{biblatex}
 \usepackage[utf8]{inputenc}  % necessary for csvsimple to read files in utf-8
+\usepackage[T1]{fontenc}  % for support for hyphenation with umlauts, such as Aminosäure
 \usepackage{csvsimple}  % for generating tables from csv
 \usepackage{blindtext}
 \usepackage{booktabs}
@@ -19,13 +19,9 @@
 \usepackage{wrapfig}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-\floatname{algorithm}{Algorithmus}
-\newcommand{\algorithmautorefname}{Algorithmus}
-\renewcommand{\listalgorithmname}{Algorithmenverzeichnis}
-\renewcommand{\algorithmicrequire}{\textbf{Vorbedingung}}
-\renewcommand{\algorithmicensure}{\textbf{Nachbedingung}}
-\algnewcommand\algorithmicforeach{\textbf{for each}}
-\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+
+\input{commands}
+
 
 \bibliography{Literatur}
 
