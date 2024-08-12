@@ -17,6 +17,15 @@
 \usepackage{listings}  % for Code listing
 \usepackage{xcolor}  % for colorful Code listing
 \usepackage{wrapfig}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\floatname{algorithm}{Algorithmus}
+\newcommand{\algorithmautorefname}{Algorithmus}
+\renewcommand{\listalgorithmname}{Algorithmenverzeichnis}
+\renewcommand{\algorithmicrequire}{\textbf{Vorbedingung}}
+\renewcommand{\algorithmicensure}{\textbf{Nachbedingung}}
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
 
 \bibliography{Literatur}
 
