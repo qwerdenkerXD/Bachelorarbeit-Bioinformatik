@@ -51,10 +51,14 @@ def plot_scoring():
     _, y_max = ax.get_ylim()
     ax.set_ylim(y_min, y_max + .1)
 
+    for s in ax.spines.values():
+        s.set_visible(False)
+    ax.spines["bottom"].set_visible(True)
+
     ax.set_yticklabels([])
     ax.set_yticks([])
     ax.set_xlabel("Offset")
-    ax.set_ylabel("Frequenz")
+    # ax.set_ylabel("Frequenz")
     ax.set_title("Ermittlung des S1-Score", fontdict={"fontweight": "bold"})
     plt.savefig("../results/plot_scoring.png", bbox_inches='tight')
 
@@ -122,9 +126,9 @@ def plot_method():
     plt.savefig("../results/plot_method.png", bbox_inches='tight')
 
 
-def set_spines_blue(ax):
+def set_spines_blue(ax, color=TH_COLOR):
     for spine in ax.spines.values():
-        spine.set_edgecolor(TH_COLOR)
+        spine.set_edgecolor(color)
 
 
 if __name__ == '__main__':
