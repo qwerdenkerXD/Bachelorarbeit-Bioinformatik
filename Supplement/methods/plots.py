@@ -1,20 +1,66 @@
 from matplotlib import pyplot as plt
 from scipy.signal import find_peaks
-import seaborn as sb
 import numpy as np
 
 np.random.seed(0)
-# sb.set(font_scale=1.5)
 TH_COLOR = "#005B99"
+plt.rcParams.update({'font.size': 15, "font.family": "serif"})
 
 
 def main():
     plot_method()
+    plot_scoring()
+
+
+def plot_scoring():
+    plt.clf()
+    fig, ax = plt.subplots(1, 1, figsize=(14, 8))
+
+    edges = [(a, b) for a in range(4) for b in range(4)]
+    edges_idx = sorted(np.random.choice(len(edges), 14, replace=False), reverse=True)
+    edges = np.array(edges)[edges_idx]
+    # print(list(zip(*edges)))
+    tp = edges[:10]
+    qp = np.concatenate((tp[3:], edges[5:6]))
+
+    # draw edges
+    def plot_edges(edges, color, alpha=1, start_i=0, linestyle="-"):
+        for i, (y1, y2) in enumerate(edges, start_i):
+            ax.plot((i//2, i//2+1), (y1, y2), color=color, alpha=alpha, linestyle=linestyle, linewidth=3)
+    plot_edges(tp[:6], "red", .3)
+    plot_edges(tp[6:], "red", start_i=4)
+    plot_edges(tp[6:], "green", start_i=4, linestyle="--")
+    plot_edges(edges[10:], "green", .3, 8)
+
+    first_hit_freq = min(tp[6][0], tp[7][0])
+    y_min, y_max = ax.get_ylim()
+    # ax.annotate("", xy=(2, y_min), xytext=(2, first_hit_freq), arrowprops=dict(arrowstyle="->", linestyle="--", color="black", alpha=.8))
+
+    # draw right constellation map (Query)
+    ax.plot((2, len(edges)//2 -.8), (y_max, y_max), color="green", linewidth=3)
+    ax.fill_between((2, len(edges)//2 - .8), y_max, y_min, color="green", alpha=.03)
+    ax.text(len(edges)//2 - .8, y_max + .05, "Constellation-Map Suchprotein", ha="right")
+
+    # draw right constellation map (Match)
+    ax.plot((-.2, len(tp)//2 - 1), (y_max + .05, y_max + .05), color="red", linewidth=3)
+    ax.fill_between((-.2, len(tp)//2 - 1), y_max + .05, y_min, color="red", alpha=.03)
+    ax.text(-.2, y_max + .1, "Constellation-Map Trefferprotein")
+
+    ax.text(3.5, first_hit_freq / 2, "S1-Score$=4$", va="center", ha="center")
+
+    _, y_max = ax.get_ylim()
+    ax.set_ylim(y_min, y_max + .1)
+
+    ax.set_yticklabels([])
+    ax.set_yticks([])
+    ax.set_xlabel("Offset")
+    ax.set_ylabel("Frequenz")
+    ax.set_title("Ermittlung des S1-Score", fontdict={"fontweight": "bold"})
+    plt.savefig("../results/plot_scoring.png", bbox_inches='tight')
 
 
 def plot_method():
     plt.clf()
-    plt.rcParams.update({'font.size': 15, "font.family": "serif"})
 
     fig, ax = plt.subplots(1, 1, figsize=(14, 8))
     set_spines_blue(ax)

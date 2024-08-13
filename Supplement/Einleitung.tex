@@ -2,13 +2,13 @@
     \label{sec:einleitung}
     \dots Wissenschaftlicher Kontext, zufällige Ähnlichkeit in Alignments \dots
 
-    Diese Bachelorarbeit, die auf dem Projekt \protfin\ aufbaut, stellt sich diesem Problem zufälliger Ähnlichkeit und beschäftigt sich daher mit der Frage, ob es möglich ist, funktionsähnliche Proteine über ihre physikalischen Eigenschaften zu identifizieren, anstelle der lediglichen Buchstaben ihrer Aminosäuren, und ob das die Problematik umgeht.
+    Diese Bachelorarbeit beinhaltet die Entwicklung von Version 0.4 des Projekts \protfin\footnote{\url{https://github.com/usadellab/prot-fin/releases/tag/v0.4/experiments/recog_with_fft} bei Commit \href{https://github.com/usadellab/prot-fin/tree/86ea260b7c6d7bb520b57e2b29e350bd3942fe71/experiments/recog_with_fft}{\texttt{86ea260}}} und den zugehörigen Experimenten. \protfin\ stellt sich dem Problem zufälliger Ähnlichkeit und beschäftigt sich daher mit der Frage, ob es möglich ist, funktionsähnliche Proteine über ihre physikalischen Eigenschaften zu identifizieren, anstelle der lediglichen Buchstaben ihrer Aminosäuren, und ob das die Problematik umgeht.
 
     Eine Grundlage hierfür bildet die Arbeit von Akinori Kidera \textit{et. al.}, welcher in seiner Forschungsgruppe mittels statistischer Faktorenanalyse 188 physikalische Eigenschaften der 20 natürlich vorkommenden Aminosäuren auf lediglich 10 sogenannte Kidera-Faktoren reduziert hat, die zusammen all diese Eigenschaften am besten erklären \vgl{kidera}. So ist beispielsweise die Hydrophobizität ein ebensolcher Faktor, da diese mit vielen anderen Eigenschaften stark in Korrelation steht.
 
     Der Einfluss eines jeden Faktors in einer Aminosäure lässt sich numerisch darstellen, sodass eine Aminosäuresequenz in 10 Vektoren übersetzt werden kann, welche nun ein statistisch auswertbares Abbild der physikalischen Struktur des Proteins erzeugen.
 
-    Der Algorithmus für die Analyse dieser Struktur ist von SHAZAM inspiriert, einer Anwendung, die Musiktitel anhand kürzester Tonaufnahmen identifiziert, selbst wenn diese Störgeräusche aufweisen. Basis hierfür stellt die Short Time Fourier Transformation (STFT) dar, welche in dem musikalischen Spektrum intervall-/fensterweise periodisch auftretende Signale analysiert, wodurch auch die Störgeräusche eine geringe Relevanz haben.
+    Der Algorithmus für die Analyse dieser Struktur ist von SHAZAM inspiriert, einer Anwendung, die Musiktitel anhand kürzester Tonaufnahmen identifiziert, selbst wenn diese Störgeräusche aufweisen. Basis hierfür stellt die \ac{STFT} dar, welche in dem musikalischen Spektrum intervall-/fensterweise periodisch auftretende Signale analysiert, wodurch auch die Störgeräusche eine geringe Relevanz haben.
 
     \begin{wrapfigure}{r}{0.5\textwidth}
         \includegraphics[width=0.5\textwidth]{plot_frequency_selection.png}
@@ -35,4 +35,6 @@
         \item \textbf{Selection-Method:}\ \ Das letzte durchgeführte Experiment dieser Arbeit dient der Ermittlung einer Methode für die Frequenzselektion, die vom UniRef90-Sampling profitiert, aber die Auswahl zusätzlich reduziert. Dafür wird vor Betrachtung der Schwellwerte eine Vorselektion durchgeführt, einmal anhand der lokalen Maxima der Amplituden, dann anhand der stärksten Abweichungen der Amplituden von ihren Schwellwerten und natürlich ohne Vorselektion als Nullprobe, die nur das Sampling einbezieht. Dabei wird die Datenbankerstellung abgebrochen, sobald deren Größe die Eingabe um ein 6-faches übersteigt.
     \end{enumerate}
     Als Trainingsdaten wird eine Referenz-Datenbank von Pflanzen-Proteinen verwendet, die in Gruppen derselben Funktion eingeordnet sind. Diese Zuordnung wurde manuell von Experten durchgeführt in sogenannte MapMan-Bins, was heißt:\\Derselbe Bin $\rightarrow$ dieselbe Funktion \cite{mapman}.
+
+    \textit{Diese Bachelorarbeit ist auf GitHub\footnote{\url{https://github.com/qwerdenkerXD/Bachelorarbeit-Bioinformatik}} verfügbar. Bei Fragen oder Anmerkungen zur Kontaktaufnahme bitte die dortige Issue-Funktion verwenden.}
 % section einleitung (end)
