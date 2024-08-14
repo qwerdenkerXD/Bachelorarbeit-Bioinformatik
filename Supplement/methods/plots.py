@@ -1,5 +1,9 @@
+from matplotlib.colors import LinearSegmentedColormap as Cmap, Normalize
+from matplotlib.cm import ScalarMappable
 from matplotlib import pyplot as plt
 from scipy.signal import find_peaks
+from os.path import getsize
+import pandas as pd
 import numpy as np
 
 np.random.seed(0)
@@ -10,6 +14,170 @@ plt.rcParams.update({'font.size': 15, "font.family": "serif"})
 def main():
     plot_method()
     plot_scoring()
+    plot_single_prot_matching(pd.read_csv("../material/Target-Zone/summary.csv"), "plot_target_zone")
+    plot_single_prot_matching(pd.read_csv("../material/Selection-Method/summary.csv"), "plot_selection_method")
+
+    summary = pd.read_csv("../material/Filter Hashes/summary.csv")
+    plot_single_prot_matching(summary[~summary["Hash_Use_First_Appearance"]], "plot_filter_hashes")
+
+    summary = pd.read_csv("../material/UniRef90 Sampling/summary.csv")
+    dbstats = pd.read_csv("../material/UniRef90 Sampling/runtimes_createdb.csv")
+    dbstats["DB_Size"] = dbstats["DB_Size"].str.replace("M", "").astype(int)
+    dbparams = dbstats[["Winsize", "n_Peaks", "Overlap"]].apply(tuple, axis=1)
+    db_sizes = []
+    for w, n, o in summary[["Window_Size", "N_Peaks", "Overlap"]].apply(tuple, axis=1):
+        db_sizes.append(dbstats["DB_Size"][dbparams == (w, n, o)].iloc[0])
+    summary["DB_Size_MB"] = db_sizes
+    plot_single_prot_matching(summary, "plot_uniref90")
+
+    plot_family_matching(pd.read_csv("../material/Selection-Method/summary_match_family.csv"), "plot_selection_method")
+
+    summary = pd.read_csv("../material/Filter Hashes/summary_match_family.csv")
+    plot_family_matching(summary[~summary["Hash_Use_First_Appearance"]], "plot_filter_hashes")
+
+
+def plot_single_prot_matching(summary: pd.DataFrame, out_file):
+    plt.clf()
+    fig, ax = plt.subplots(1, 1, figsize=(14, 6))
+    set_spine_color(ax)
+
+    ax.axhline(getsize("../material/.protein.fa") / (1024 ** 2))
+
+    cmap = Cmap.from_list(
+        'custom_cmap',
+        [(0, 'black'), (1/3, 'black'), (2/3, 'red'), (1, 'lime')]
+    )
+    norm = Normalize(vmin=0, vmax=summary["Self_Matches"].max())
+
+    boxwidth = 5
+
+    def add_gradient_box(ax, position, color_val, ylim):
+        gradient = np.linspace(0, 1, 256).reshape(1, -1)
+        gradient = np.vstack((gradient, gradient))
+        ax.imshow(
+            gradient,
+            aspect='auto',
+            cmap=Cmap.from_list(
+                'custom_cmap2',
+                [(0, 'white'), (.5, cmap(norm(color_val))), (1, 'white')]
+            ),
+            extent=[position - .5 * boxwidth, position + .5 * boxwidth, *ylim],
+            alpha=0.2
+        )
+
+    boxes = []
+
+    def boxplot(ax, position, data):
+        box = ax.boxplot([data["DB_Size_MB"]], positions=[position],
+                         widths=boxwidth,
+                         boxprops=dict(linewidth=3),
+                         **{i: dict(linewidth=3) for i in ["whiskerprops", "capprops"]},
+                         showfliers=False
+                         )["boxes"]
+        boxes.append((data.get("Mean_Sharpness", np.zeros(1)).mean(), *box))
+        gradient_boxes.append((position, data["Unique_Self_Matches"].mean()))
+
+    gradient_boxes = []
+    special_params = tuple(i for i in ("Significance", "Quantile", "Skip_First_K_Freqs") if i in summary)
+    if len(special_params):
+        groups = summary.groupby(["Window_Size", *special_params])
+        special_params = ("Fenstergröße",
+            *(i.replace("le", "l").replace("cance", "kanz").replace("Skip_First_K_Freqs", "k") for i in special_params)
+        )
+
+        plt.clf()
+        fig, ax = plt.subplots(1, 1, figsize=(14 + 6 * (len(groups) // 10), 6))
+        set_spine_color(ax)
+
+        ax.axhline(getsize("../material/.protein.fa") / (1024 ** 2))
+
+        xticklabels = []
+        for pos, (params, data) in enumerate(groups):
+            boxplot(ax, pos * 10, data)
+            xticklabels.append("\n".join(str(i) for i in params))
+        ax.set_xticklabels(xticklabels)
+        ax.set_xlabel("\n".join(special_params))
+    else:
+        for win_size, data in sorted(summary.groupby("Window_Size"), key=lambda x: x[1]["DB_Size_MB"].max(), reverse=True):
+            boxplot(ax, win_size, data)
+        ax.set_xlabel("Fenstergröße")
+
+    for i, (sharpness, patch) in enumerate(boxes):
+        # Get the box's coordinates
+        # patch.set_facecolor("white")
+        path = patch.get_path()
+        vertices = path.vertices
+        x0, y0 = vertices[0]
+        x1, y1 = vertices[2]
+        # Calculate the height of the filled portion
+        box_height = y1 - y0
+        filled_height = box_height * sharpness
+        # Create a filled rectangle patch
+        filled_box = plt.Rectangle((x0, y0), x1 - x0, box_height, color="white")
+        ax.add_patch(filled_box)
+        filled_box = plt.Rectangle((x0, y0), x1 - x0, filled_height, color=TH_COLOR, alpha=.8)
+        ax.add_patch(filled_box)
+
+    ylim = ax.get_ylim()
+    for b in gradient_boxes:
+        add_gradient_box(ax, *b, ylim)
+    ax.autoscale(enable=True, axis='x', tight=True)
+    # ax.autoscale(enable=True, axis='y', tight=True)
+    xmin, xmax = ax.get_xlim()
+    ax.set_xlim(xmin - .25 * boxwidth, xmax + .25 * boxwidth)
+    plt.colorbar(ScalarMappable(cmap=cmap, norm=norm), ax=plt.gca()).set_label("Unique Self Matches", rotation=-90, va="bottom")
+
+    ax.set_ylabel("Datenbankgröße (MB)")
+    ax.set_title("Single-Protein-Matching Ergebnisse")
+    plt.savefig("../results/%s.sp.png" % out_file, bbox_inches='tight')
+
+
+def plot_family_matching(summary: str, out_file):
+    plt.clf()
+    fig, ax = plt.subplots(1, 1, figsize=(14, 6))
+    set_spine_color(ax)
+
+    boxwidth = 5
+
+    special_params = tuple(i for i in ("Significance", "Quantile", "Skip_First_K_Freqs") if i in summary)
+    if len(special_params):
+        groups = summary.groupby(["Window_Size", *special_params])
+        special_params = ("Fenstergröße",
+            *(i.replace("le", "l").replace("cance", "kanz").replace("Skip_First_K_Freqs", "k") for i in special_params)
+        )
+
+        plt.clf()
+        fig, ax = plt.subplots(1, 1, figsize=(14 + 5 * (len(groups) // 10), 6))
+        set_spine_color(ax)
+
+        xticklabels = []
+
+        for pos, (params, data) in sorted(enumerate(groups), key=lambda x: x[1][1]["Average_F_Score"].max(), reverse=True):
+            ax.boxplot([data["Average_F_Score"]], positions=[pos * 10],
+                       widths=boxwidth,
+                       **{i: dict(linewidth=3) for i in ["boxprops", "whiskerprops", "capprops"]},
+                       showfliers=False
+                       )
+            xticklabels.append("\n".join(str(i) for i in params))
+        ax.set_xticklabels(xticklabels)
+        ax.set_xlabel("\n".join(special_params))
+    else:
+        for win_size, data in sorted(summary.groupby("Window_Size"), key=lambda x: x[1]["Average_F_Score"].max(), reverse=True):
+            ax.boxplot([data["Average_F_Score"]], positions=[win_size],
+                       widths=boxwidth,
+                       **{i: dict(linewidth=3) for i in ["boxprops", "whiskerprops", "capprops"]},
+                       showfliers=False
+                       )
+        ax.set_xlabel("Fenstergröße")
+
+    ax.autoscale(enable=True, axis='x', tight=True)
+    # ax.autoscale(enable=True, axis='y', tight=True)
+    xmin, xmax = ax.get_xlim()
+    ax.set_xlim(xmin - .25 * boxwidth, xmax + .25 * boxwidth)
+
+    ax.set_ylabel("F1-Score")
+    ax.set_title("Family-Matching Ergebnisse")
+    plt.savefig("../results/%s.fam.png" % out_file, bbox_inches='tight')
 
 
 def plot_scoring():

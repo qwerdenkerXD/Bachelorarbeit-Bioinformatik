@@ -1,12 +1,12 @@
 \section{Material} % (fold)
 \label{sec:material}
     \subsection{\aclp{TP}} % (fold)
-    \label{sub:tp}
-    \dots
+        \label{sub:mapman}
+        \dots
     % subsection ac (end)
     \subsection{UniRef90} % (fold)
-    \label{sub:uniref90}
-    \dots
+        \label{sub:uniref90}
+        \dots
     % subsection uniref90 (end)
 % section material (end)
 
@@ -20,7 +20,7 @@
             % \addtocounter{subsubsection}{1}
             % \addcontentsline{toc}{subsubsection}{\protect\numberline{\thesubsubsection} #1}}
             \addcontentsline{toc}{subsubsection}{#1}}
-        \begin{algorithm}
+        \begin{algorithm}[H]
             \caption{Übersetzen einer Aminosäuresequenz in einen numerischen Vektor}\label{alg:vorbereitung}
             \PhantomSubSub{Übersetzen einer Aminosäuresequenz in einen numerischen Vektor}
             \newcommand{\I}{\text{\textquotesingle}}
@@ -51,21 +51,23 @@
               late after line=\\,
               late after last line=\\\bottomrule
               ]%
-              {../../prot-fin/materials/Amino_Acid_Kidera_Factors.csv}{Kidera_Factor=\KF, Kidera_Factor_Description=\KFD}%
+              {material/Amino_Acid_Kidera_Factors.csv}{Kidera_Factor=\KF, Kidera_Factor_Description=\KFD}%
             {\KFD & \A  & \C & \D & \E & \F & \G & \dots}
         \end{table}
 
         \newpage
         Folglich kann eine Aminosäuresequenz pro Faktor in einen numerischen Vektor übersetzt werden, wobei ein höherer absoluter Wert für mehr Relevanz des Faktors steht. Hätte man also die Beispielsequenz \texttt{EVKEFDGQGCFC}, wäre die Übersetzung für die Hydrophobizität die folgende:
 
-        \begin{table}[h]
+        \begin{figure}[H]
             \centering
             \begin{tabular}{cccccccccccc}
                 % x=list(np.random.choice(list("ACDEFGHIKLMNPQRSTVWY"), len("cccccccccccc"), p=[.1,.1,.1,.1,.1,.1,*([.4/14]*14)]));" & ".join(x);" & ".join(str(KIDERA_TABLE[i][3]) for i in x)
                 E & V & K & E & F & D & G & Q & G & C & F & C\\
                 1.17 & -0.4 & 1.7 & 1.17 & -1.43 & 0.81 & -0.16 & 1.1 & -0.16 & -1.05 & -1.43 & -1.05
             \end{tabular}
-        \end{table}
+            \caption{Beispielsequenz als numerischer Vektor}
+            \label{fig:kidera_example}
+        \end{figure}
 
         Da für die Fourier Transformation negative Werte problematisch sind, wird der Vektor anschließend dahingehend normalisiert, dass das absolute Minimum aller Werte aus \autoref{tab:kidera} aufaddiert wird. Das absolute Minimum ist 2.33, weshalb der normalisierte Ergebnisvektor der Beispielsequenz so aussieht:
         \begin{equation}
@@ -73,13 +75,13 @@
             \begin{split}
                 raw\_vec & = [1.17\ \sminus0.4\ \ 1.7\ \ 1.17\ \sminus1.43\ \ 0.81\ \sminus0.16\ \ 1.1\ \sminus0.16\ \sminus1.05\ \sminus1.43\ \sminus1.05]\\
                 normalized\_vec & = raw\_vec + 2.33\\
-                normalized\_vec & = [3.5\ \ 1.93\ \ 4.03\ \ 3.5\ \ 0.9\ \ 3.14\ \ 2.17\ \ 3.43\ \ 2.17\ \ 1.28\ \ 0.9\ \ 1.28]
+                 & = [3.5\ \ 1.93\ \ 4.03\ \ 3.5\ \ 0.9\ \ 3.14\ \ 2.17\ \ 3.43\ \ 2.17\ \ 1.28\ \ 0.9\ \ 1.28]
             \end{split}
         \end{equation}
 
         % Sammeln struktureller Information
         % \vspace{2.25mm}
-        \begin{algorithm}
+        \begin{algorithm}[H]
             \caption{Sammeln von Strukturdaten}\label{alg:strukturdaten}
             \PhantomSubSub{Sammeln von Strukturdaten}
             \begin{algorithmic}[1]
@@ -87,7 +89,7 @@
                 \Ensure $constellation\_map$ is an Array of Arrays of Floats
 
                 \State $constellation\_map \gets \texttt{array}()$
-                \State $stft\_result \gets \texttt{stft\_transform}(aa\_vector)$
+                \State $stft\_result \gets \texttt{stft\_transform}(aa\_vector)$\AlgLineLabel{alg:strukturdaten:stft}
                 \ForEach{$window$}{$stft\_result$}
                     \State $selected\_frequencies \gets \texttt{select\_maxima}(window)$\AlgLineLabel{alg:strukturdaten:selection}
                     \State $constellation\_map.\texttt{append}(selected\_frequencies)$
@@ -137,7 +139,7 @@
 
         Die Hashfunktion ist bijektiv gestaltet, sodass aus einem Hash all seine Bestandteile, die für die Erstellung verwendet wurden, eindeutig abgeleitet werden können. Das hängt damit zusammen, dass diese Bestandteile auf Bit-Ebene hintereinandergereiht werden, nämlich nach folgendem Schema:
 
-        \begin{table}[H]
+        \begin{figure}[H]
             \newcommand{\Col}[2]{\multicolumn{1}{|@{}p{#1\linewidth}@{}|}{\centering #2}}
             \centering
             \begin{tabular}{@{}p{0.1875\linewidth}@{}p{0.125\linewidth}@{}p{0.375\linewidth}@{}p{0.15625\linewidth}@{}p{0.15625\linewidth}@{}}
@@ -148,7 +150,9 @@
                 \centering \textit{unbelegt} & \centering Kidera Faktor & \centering Kantenlänge/Fensterabstand & \centering Frequenz Nachfolger & \centering Frequenz Ursprung
                 % 4 Bit & 18 Bit & 5 Bit & 5 Bit\\
             \end{tabular}
-        \end{table}
+            \caption{Schematischer Aufbau eines Hashes}
+            \label{fig:hash}
+        \end{figure}
 
         Für 10 Faktoren reichen 4 Bit. Die Fenstergrößen belaufen sich auf unter 64, sodass mit 5 Bit alle möglichen Frequenzen abgedeckt werden können. Da die Anzahl Frequenzen immer gleich ist, können diese aufsteigend durchnummeriert werden, sodass die x-Achse in \autoref{fig:freq_selection} der Folge von 0 bis 15 entspräche. 12 Bit enthalten die ``Kantenlänge'' eines Hashes. Die restlichen 6 Bits zu einem 32-Bit Integer können in der weiteren Entwicklung von \protfin\ beliebig belegt werden.
 
@@ -247,7 +251,10 @@
                 Da es große Proteine mit sehr langen Aminosäuresequenzen kürzere Sequenzen kleinerer funktionsungleicher Proteine enthalten können, reicht der ermittelte Score alleine nicht aus, da in diesem Fall sehr viele Kanten der Eingabe-Map übereinstimmen würden, sodass trotz Mis-Match der nahezu maximale Score erreicht werden würde. Bezogen auf das Beispiel zu S1 in \autoref{fig:scoring}, wäre dort der grüne Bereich vollständig vom roten Bereich eingeschlossen mit Überschneidungen in beinahe allen Kanten.
 
                 Um das zu umgehen, wird der \ac{JSI} verwendet, einem Maß, das die Übereinstimmung zweier Mengen A und B wie folgt bewertet:
-                $$JSI(A, B)=\frac{|A \cap B|}{|A \cup B|}$$
+                \begin{equation}
+                    \label{equ:jsi}
+                    JSI(A, B)=\frac{|A \cap B|}{|A \cup B|}
+                \end{equation}
                 Dieser Index nimmt einen Wert von 0 an, wenn beide Mengen disjunkt sind, und nähert sich der 1 je größer die Schnittmenge ist. Im Fall des Vergleichs zweier Constellation-Maps, also zwei Hash-Mengen, wird hier bewertet, wie viele Kanten sich die beiden Maps positionsunabhängig teilen. Durch diese Unabhängigkeit reicht der JSI alleine nicht als Score aus, sodass nur in Kombination/Multiplikation mit dem S1 ein robuster Score entsteht, da beide zusammen ihre Schwächen aufheben. Der \ac{JSI} in \autoref{fig:scoring} beträgt $\frac{4}{14} \approx 0.286$, da die Schnittmenge beider Hashmengen hier gleichzeitig den S1-Score bilden und die restlichen Hashes disjunkt zueinander sind. Der S1 wäre nur noch 3, wenn eine der markierten Kanten an einer anderen Position wäre, wobei der \ac{JSI} davon unberührt bliebe.
 
             \item \PhantomSubSub{Family-Matching}
@@ -255,6 +262,7 @@
 
                 Für die Ausgabe werden diese Treffer zusammengefasst. Dazu gibt es zwei Kriterien, den F-Score und die Schärfe (Sharpness), die nach folgender Berechnung ermittelt werden:
                 \begin{equation}
+                    \label{equ:f_score}
                     \begin{split}
                         t & = \texttt{max\_score}(TrP)\\
                         Sharpness & = \begin{cases}
@@ -298,18 +306,18 @@
         Die zu klärende Frage ist, welche Grenzquantile verwendet werden müssen, um eine möglichst gute Wahl zu erzielen.
     % subsection experiment_1_uniref90_sampling (end)
     \subsection{Experiment 2: Filter Hashes} % (fold)
-    \label{exp:filter_hashes}
+        \label{exp:filter_hashes}
         Die Experimente zu vorigen Versionen von \protfin\ haben zu sehr großen Datenbanken und langsamem Matching geführt. Unter der Annahme, dass es möglich ist, die Datenbank auf Eingabegröße zu reduzieren, sollte darin je Protein nur das Notwendigste gespeichert werden. In \hyperref[exp:uniref90]{Experiment 1} wird dafür die Frequenzwahl angegangen. Alternativ soll in dem hiesigen Experiment die Größe durch einen Filter ermöglicht werden. Dazu werden nach der Datenbankerstellung nur die Einträge der quantilsmäßig seltensten Hashes behalten. Die entfernten Hashes an sich werden zudem in einer Blacklist gespeichert, um sie vor dem Matching auch aus den Hashes der Suchsequenzen zu entfernen, da ansonsten das Ergebnis verfälscht werden würde, aufgrund von fehlenden übereinstimmenden Hashes, die eigentlich da gewesen wären.
 
         Auch in diesem Experiment muss herausgefunden werden, welches Quantil sich am besten eignet. Je kleiner es ist, desto kleiner wird auch die Datenbank, aber umso ungenauer auch das Matching. Es gilt einen guten Kompromiss zu finden.
     % subsection filter_hashes (end)
     \subsection{Experiment 3: \acl{TZ}} % (fold)
-    \label{exp:target_zone}
-    Die \ac{TZ} beschreibt in \autoref{fig:hashing} die maximal mögliche Kantenlänge eines Hashes, also die Anzahl Nachfolgefenster, die für das Hashing herangezogen werden. Je größer die \ac{TZ}, desto näher kommt die Constellation-Map einem vollständigen Graphen, was die Datenbankgröße entscheidend beeinflusst. Da die \ac{TZ} mit 12 Bit, also 4096, für Aminosäuresequenzen unbeschränkt ist, wird in diesem Experiment geprüft, wie viele Bit tatsächlich notwendig sind, um eine echte Einschränkung darzustellen und trotzdem ein gutes Matching zu gewährleisten. Umgesetzt wird dies in \RefAlgLine{alg:hashing}{target_zone}, wo durch die Nachfolger iteriert wird. Um die \ac{TZ} einzubeziehen, werden die hard-coded $2^{12} - 1$ mit einer zusätzlichen Variable zu $2^{target\_zone} - 1$ erweitert.
+        \label{exp:target_zone}
+        Die \ac{TZ} beschreibt in \autoref{fig:hashing} die maximal mögliche Kantenlänge eines Hashes, also die Anzahl Nachfolgefenster, die für das Hashing herangezogen werden. Je größer die \ac{TZ}, desto näher kommt die Constellation-Map einem vollständigen Graphen, was die Datenbankgröße entscheidend beeinflusst. Da die \ac{TZ} mit 12 Bit (\autoref{fig:hash}), also 4096, für Aminosäuresequenzen nahezu unbeschränkt ist, wird in diesem Experiment geprüft, wie viele Bit tatsächlich notwendig sind, um eine echte Einschränkung darzustellen und trotzdem ein gutes Matching zu gewährleisten. Umgesetzt wird dies in \RefAlgLine{alg:hashing}{target_zone}, wo durch die Nachfolger iteriert wird. Um die \ac{TZ} einzubeziehen, werden die hard-coded $2^{12} - 1$ mit einer zusätzlichen Variable zu $2^{target\_zone} - 1$ erweitert.
     % subsection experiment_3_target_zone (end)
     \subsection{Experiment 4: Selection-Method} % (fold)
-    \label{exp:selection_method}
-    Dieses letzte Experiment dieser Arbeit knüpft an \autoref{exp:uniref90} an. Dort ist die Intention, die ermittelten Grenzwerte als alleiniges Auswahlkriterium zu verwenden. Allerdings gibt es einige Ansätze, dies zu erweitern, um noch strenger zu wählen.
+        \label{exp:selection_method}
+        Dieses letzte Experiment dieser Arbeit knüpft an \hyperref[exp:uniref90]{Experiment 1} an. Dort ist die Intention, die ermittelten Grenzwerte als alleiniges Auswahlkriterium zu verwenden. Allerdings gibt es einige Ansätze, dies zu erweitern, um noch strenger zu wählen.
     
     \begin{enumerate}
         \item Es wird eine Vorselektion über die bisherige Methode der Maxima getätigt und dann auf die daraus resultierenden Frequenzen der Grenzwertfilter angewandt. Zusätzlich werden auch Minima einbezogen.
@@ -317,5 +325,7 @@
     \end{enumerate}
 
     Diesen beiden Methoden werden zusätzlich durch einen Parameter $k$ erweitert, welcher bestimmt, dass die ersten $k$ Frequenzen (entsprechend ihrer Reihenfolge wie im Beispiel in \autoref{fig:freq_selection}) im Nachhinein aus der Auswahl entfernt werden. Das hat den Hintergrund, dass niedrige Frequenzen hier wenig über Periodizität aussagen, da in dieser Periode nur eine oder zwei Aminosäuren betrachtet werden. Da die Amplituden auf Summen basieren, kommt es dadurch leicht zu hohen Werten.
+
+    Um die Ansätze effizient zu testen, wird die Datenbankerstellung in \autoref{alg:datenbank} so angepasst, dass sie abgebrochen wird, sobald der Speicherbedarf das 6-fache der Eingabedaten übersteigt.
     % subsection experiment_4_selection_method (end)
 % section methoden (end)

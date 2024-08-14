@@ -1,3 +1,6 @@
+**/.*
+!.gitignore
+
 Supplement/*.*
 !Supplement/*.tex
 !Supplement/*.png
