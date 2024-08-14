@@ -1,5 +1,17 @@
-\section{Material und Methoden} % (fold)
-    \label{sec:material_und_methoden}
+\section{Material} % (fold)
+\label{sec:material}
+    \subsection{\aclp{TP}} % (fold)
+    \label{sub:tp}
+    \dots
+    % subsection ac (end)
+    \subsection{UniRef90} % (fold)
+    \label{sub:uniref90}
+    \dots
+    % subsection uniref90 (end)
+% section material (end)
+
+\section{Methoden} % (fold)
+    \label{sec:methoden}
     % Erhalt numerischer Vektoren
     \subsection{Grundalgorithmus} % (fold)
         \label{sub:grundalgorithmus}
@@ -12,7 +24,7 @@
             \caption{Übersetzen einer Aminosäuresequenz in einen numerischen Vektor}\label{alg:vorbereitung}
             \PhantomSubSub{Übersetzen einer Aminosäuresequenz in einen numerischen Vektor}
             \newcommand{\I}{\text{\textquotesingle}}
-            \begin{algorithmic}
+            \begin{algorithmic}[1]
                 \Require $sequence \in \{ \text{A-Z}, \I\Psi\I, \I\Omega\I, \I\Phi\I, \I\zeta\I, \I\Pi\I, \I\text{+}\I, \I\text{-}\I\}^{*} $
                 \Require $0 \leq kf \leq 10$
                 \Ensure $|aa\_vector| = |sequence|$
@@ -70,14 +82,14 @@
         \begin{algorithm}
             \caption{Sammeln von Strukturdaten}\label{alg:strukturdaten}
             \PhantomSubSub{Sammeln von Strukturdaten}
-            \begin{algorithmic}
+            \begin{algorithmic}[1]
                 \Require $aa\_vector$ aus \autoref{alg:vorbereitung}
                 \Ensure $constellation\_map$ is an Array of Arrays of Floats
 
                 \State $constellation\_map \gets \texttt{array}()$
                 \State $stft\_result \gets \texttt{stft\_transform}(aa\_vector)$
                 \ForEach{$window$}{$stft\_result$}
-                    \State $selected\_frequencies \gets \texttt{select\_maxima}(window)$
+                    \State $selected\_frequencies \gets \texttt{select\_maxima}(window)$\AlgLineLabel{alg:strukturdaten:selection}
                     \State $constellation\_map.\texttt{append}(selected\_frequencies)$
                 \EndFor
             \end{algorithmic}
@@ -89,7 +101,7 @@
         \begin{algorithm}[H]
             \caption{Hashing}\label{alg:hashing}
             \PhantomSubSub{Hashing}
-            \begin{algorithmic}
+            \begin{algorithmic}[1]
                 \Require $constellation\_map$ aus \autoref{alg:strukturdaten}
                 \Require $protein\_id$ is a String
                 \Require $0 \leq kf \leq 10$
@@ -100,14 +112,14 @@
                 \Repeat
                     \State $selected\_frequencies \gets constellation\_map.\texttt{pop}(0)$
                     \ForEach{$frequency$}{$selected\_frequencies$}
-                        \State $successor\_idx \gets 0$
-                        \ForEach{$succ\_frequencies$}{$constellation\_map$}
+                        \State $successor\_count \gets \texttt{min}(2^{12}, \texttt{length}(constellation\_map)) - 1$\AlgLineLabel{alg:hashing:target_zone}
+                        \For{$successor\_idx \gets 0\ \textbf{to}\ successor\_count$}
+                            \State $succ\_frequencies \gets constellation\_map[successor\_idx]$
                             \ForEach{$succ\_frequency$}{$succ\_frequencies$}
                                 \State $hash \gets \texttt{create\_hash}(frequency, succ\_frequency, successor\_idx, kf)$
                                 \State $hashes[hash] \gets (window\_idx, protein\_id)$
                             \EndFor
                         \EndFor
-                        \State $successor\_idx \gets successor\_idx + 1$
                     \EndFor
                     \State $window\_idx \gets window\_idx + 1$
                 \Until{$constellation\_map$ is empty}
@@ -128,23 +140,23 @@
         \begin{table}[H]
             \newcommand{\Col}[2]{\multicolumn{1}{|@{}p{#1\linewidth}@{}|}{\centering #2}}
             \centering
-            \begin{tabular}{@{}p{0.125\linewidth}@{}p{0.5625\linewidth}@{}p{0.15625\linewidth}@{}p{0.15625\linewidth}@{}}
-            % \begin{tabular}{|@{}p{0.125\linewidth}@{}|@{}p{0.5625\linewidth}@{}|@{}p{0.15625\linewidth}@{}|@{}p{0.15625\linewidth}@{}|}
+            \begin{tabular}{@{}p{0.1875\linewidth}@{}p{0.125\linewidth}@{}p{0.375\linewidth}@{}p{0.15625\linewidth}@{}p{0.15625\linewidth}@{}}
+            % \begin{tabular}{|@{}p{0.125\linewidth}@{}|@{}p{0.375\linewidth}@{}|@{}p{0.15625\linewidth}@{}|@{}p{0.15625\linewidth}@{}|}
                 \hline
-                \Col{0.125}{ 4 Bit} & \Col{0.5625}{18 Bit} & \Col{0.15625}{5 Bit} & \Col{0.15625}{5 Bit}\\
+                \Col{0.1875}{6 Bit} & \Col{0.125}{ 4 Bit} & \Col{0.375}{12 Bit} & \Col{0.15625}{5 Bit} & \Col{0.15625}{5 Bit}\\
                 \hline
-                \centering Kidera Faktor & \centering Kantenlänge/Fensterabstand & \centering Frequenz Nachfolger & \centering Frequenz Ursprung
+                \centering \textit{unbelegt} & \centering Kidera Faktor & \centering Kantenlänge/Fensterabstand & \centering Frequenz Nachfolger & \centering Frequenz Ursprung
                 % 4 Bit & 18 Bit & 5 Bit & 5 Bit\\
             \end{tabular}
         \end{table}
 
-        Für 10 Faktoren reichen 4 Bit. Die Fenstergrößen belaufen sich auf unter 64, sodass mit 5 Bit alle möglichen Frequenzen abgedeckt werden können. Da die Anzahl Frequenzen immer gleich ist, können diese aufsteigend durchnummeriert werden, sodass die x-Achse in \autoref{fig:freq_selection} der Folge von 0 bis 15 entspräche. Die restlichen 18 Bit zu einem 32-Bit Integer dienen der ``Kantenlänge'' eines Hashes, auch wenn dafür bei den recht kurzen Sequenzen schon weniger als die Hälfte an Bits ausreichen würde, denn so viele Fenster sind gar nicht möglich, um die Kapazität voll auszuschöpfen.
+        Für 10 Faktoren reichen 4 Bit. Die Fenstergrößen belaufen sich auf unter 64, sodass mit 5 Bit alle möglichen Frequenzen abgedeckt werden können. Da die Anzahl Frequenzen immer gleich ist, können diese aufsteigend durchnummeriert werden, sodass die x-Achse in \autoref{fig:freq_selection} der Folge von 0 bis 15 entspräche. 12 Bit enthalten die ``Kantenlänge'' eines Hashes. Die restlichen 6 Bits zu einem 32-Bit Integer können in der weiteren Entwicklung von \protfin\ beliebig belegt werden.
 
         % Erstellung der Datenbank
         \begin{algorithm}[H]
             \caption{Erstellung der Datenbank}\label{alg:datenbank}
             \PhantomSubSub{Erstellung der Datenbank}
-            \begin{algorithmic}
+            \begin{algorithmic}[1]
                 \Require $fasta$ is a FASTA-formatted file
                 \Ensure $database$ is a HashMap of: $Int \rightarrow Array\ of\ (Int, String)$
 
@@ -174,114 +186,136 @@
         \begin{enumerate}[a)]
             \item \PhantomSubSub{Single-Protein-Matching}
                 \textbf{Single-Protein-Matching:}\ \ Eingabe ist eine FASTA-Datei, also eine Menge an Suchsequenzen. Ausgabe je Sequenz ist eine Liste von Treffern, sortiert nach Übereinstimmung der Hashes der Constellation-Maps von Treffer und Suchsequenz. Je höher der Rang eines Treffers, desto funktionsähnlicher sollte das entsprechende Protein sein. Die Ausgabe sind \ac{CSV}, also eine durch Kommata separierte Tabelle, mit folgenden Spalteninhalten:
-            \begin{enumerate}[1.]
-                \item Rank $\rightarrow$ Rang
-                \item Match\_Protein\_ID $\rightarrow$ Protein-ID des Treffers
-                \item JSI $\rightarrow$ Jaccard Similarity Index (siehe \autoref{alg:scoring})
-                \item Score $\rightarrow$ Score (Übereinstimmung der Constellation-Map)
-                \item Input\_Protein\_ID $\rightarrow$ Protein-ID der Suchsequenz
-                \item Input\_Sequence\_Length $\rightarrow$ Sequenzlänge der Suchsequenz
-                \item Input\_Found\_Hashes $\rightarrow$ Anzahl Hashes der Suchsequenz
-            \end{enumerate}
+                \begin{enumerate}[1.]
+                    \item Rank $\rightarrow$ Rang
+                    \item Match\_Protein\_ID $\rightarrow$ Protein-ID des Treffers
+                    \item JSI $\rightarrow$ Jaccard Similarity Index (siehe \autoref{alg:scoring})
+                    \item Score $\rightarrow$ Score (Übereinstimmung der Constellation-Map)
+                    \item Input\_Protein\_ID $\rightarrow$ Protein-ID der Suchsequenz
+                    \item Input\_Sequence\_Length $\rightarrow$ Sequenzlänge der Suchsequenz
+                    \item Input\_Found\_Hashes $\rightarrow$ Anzahl Hashes der Suchsequenz
+                \end{enumerate}
 
-            \newcommand{\Width}{\dimexpr\textwidth-\leftmargin}
-            \begin{minipage}{\Width}
-                \begin{algorithm}[H]
-                    \caption{Treffer-Bewertung beim Single-Protein-Matching}\label{alg:scoring}
-                    \begin{algorithmic}
-                        \Require $hashes$ aus \autoref{alg:hashing}
-                        \Require $database$ aus \autoref{alg:datenbank}
-                        \Ensure $match\_scores$ is a HashMap of: $String \rightarrow Float$
+                \newcommand{\Width}{\dimexpr\textwidth-\leftmargin}
+                \begin{minipage}{\Width}
+                    \begin{algorithm}[H]
+                        \caption{Treffer-Bewertung beim Single-Protein-Matching}\label{alg:scoring}
+                        \begin{algorithmic}[1]
+                            \Require $hashes$ aus \autoref{alg:hashing}
+                            \Require $database$ aus \autoref{alg:datenbank}
+                            \Ensure $match\_scores$ is a HashMap of: $String \rightarrow Float$
 
-                        \State $matches\_per\_tp \gets \texttt{hashmap}()$
-                        \ForEach{$hash, position$}{$hashes$}
-                            \If{$hash\ \textbf{in}\ database$}
-                                \ForEach{$tp\_position, protein\_id$}{$database[hash]$}
-                                    \If{$protein\_id\ \textbf{not in}\ matches\_per\_tp$}
-                                        \State $matches\_per\_tp[protein\_id] \gets \texttt{hashmap}()$
-                                    \EndIf
-                                    \State $offset \gets tp\_position - position$
-                                    \If{$offset\ \textbf{not in}\ matches\_per\_tp[protein\_id]$}
-                                        \State $matches\_per\_tp[protein\_id][offset] \gets 0$
-                                    \EndIf
-                                    \State $offset\_count \gets matches\_per\_tp[protein\_id][offset]$
-                                    \State $matches\_per\_tp[protein\_id][offset] \gets offset\_count + 1$
-                                \EndFor
-                            \EndIf
-                        \EndFor
-                        \State $match\_scores \gets \texttt{hashmap}()$
-                        \ForEach{$protein, offsets$}{$matches\_per\_tp$}
-                            \State $score \gets \texttt{get\_most\_common\_offset}(offsets)$
-                            \State $match\_protein\_hashes \gets database.\texttt{get\_hashes}(protein)$
-                            \State $jsi \gets \texttt{get\_jsi}(hashes, match\_protein\_hashes)$
+                            \State $matches\_per\_tp \gets \texttt{hashmap}()$
+                            \ForEach{$hash, position$}{$hashes$}
+                                \If{$hash\ \textbf{in}\ database$}
+                                    \ForEach{$tp\_position, protein\_id$}{$database[hash]$}
+                                        \If{$protein\_id\ \textbf{not in}\ matches\_per\_tp$}
+                                            \State $matches\_per\_tp[protein\_id] \gets \texttt{hashmap}()$
+                                        \EndIf
+                                        \State $offset \gets tp\_position - position$
+                                        \If{$offset\ \textbf{not in}\ matches\_per\_tp[protein\_id]$}
+                                            \State $matches\_per\_tp[protein\_id][offset] \gets 0$
+                                        \EndIf
+                                        \State $offset\_count \gets matches\_per\_tp[protein\_id][offset]$
+                                        \State $matches\_per\_tp[protein\_id][offset] \gets offset\_count + 1$
+                                    \EndFor
+                                \EndIf
+                            \EndFor
+                            \State $match\_scores \gets \texttt{hashmap}()$
+                            \ForEach{$protein, offsets$}{$matches\_per\_tp$}
+                                \State $score \gets \texttt{get\_most\_common\_offset}(offsets)$
+                                \State $match\_protein\_hashes \gets database.\texttt{get\_hashes}(protein)$
+                                \State $jsi \gets \texttt{get\_jsi}(hashes, match\_protein\_hashes)$
 
-                            \State $match\_scores[protein] \gets score \cdot jsi$
-                        \EndFor
-                    \end{algorithmic}
-                \end{algorithm}
-            \end{minipage}
+                                \State $match\_scores[protein] \gets score \cdot jsi$
+                            \EndFor
+                        \end{algorithmic}
+                    \end{algorithm}
+                \end{minipage}
 
-            Um den Score zu bestimmen, also die Ähnlichkeit der Constellation-Map der Eingabe mit denen der \ac{TP}, werden pro Eingabe-Hash die Differenzen zwischen dessen Position mit den Positionen der trainierten Hashes gebildet und global pro Protein gezählt. Diese Differenzen repräsentieren den Abstand/Offset der Kante in der Eingabe-Map zur Kante der jeweiligen \ac{TP}-Map, also wie weit die Eingabe-Map verschoben wäre, sollte es sich bei dem \ac{TP} um das Original handeln. Auf diese Weise sammeln sich pro \ac{TP} mehrere solcher potentiellen Abstände, wobei der Abstand, der am häufigsten aufgetreten ist, offensichtlich die meiste Übereinstimmung in den Kanten zeigt. Diese Tatsache qualifiziert diese Maximalanzahl als geeigneten Score (S1) für ein Match.
+                Um den Score zu bestimmen, also die Ähnlichkeit der Constellation-Map der Eingabe mit denen der \ac{TP}, werden pro Eingabe-Hash die Differenzen zwischen dessen Position mit den Positionen der trainierten Hashes gebildet und global pro Protein gezählt. Diese Differenzen repräsentieren den Abstand/Offset der Kante in der Eingabe-Map zur Kante der jeweiligen \ac{TP}-Map, also wie weit die Eingabe-Map verschoben wäre, sollte es sich bei dem \ac{TP} um das Original handeln. Auf diese Weise sammeln sich pro \ac{TP} mehrere solcher potentiellen Abstände, wobei der Abstand, der am häufigsten aufgetreten ist, offensichtlich die meiste Übereinstimmung in den Kanten zeigt. Diese Tatsache qualifiziert diese Maximalanzahl als geeigneten Score (S1) für ein Match.
 
-            \begin{minipage}{\Width}
-            \begin{figure}[H]
-                \centering
-                \includegraphics[width=\Width]{plot_scoring.png}
-                \caption{Ermittlung des S1-Score: Die Constellation-Maps werden aneinander verschoben. Die maximale Überschneidung ist der Score.}
-                \label{fig:scoring}
-            \end{figure}
-            \end{minipage}
+                \begin{minipage}{\Width}
+                \begin{figure}[H]
+                    \centering
+                    \includegraphics[width=\Width]{plot_scoring.png}
+                    \caption{Ermittlung des S1-Score: Die Constellation-Maps werden aneinander verschoben. Die maximale Überschneidung ist der Score.}
+                    \label{fig:scoring}
+                \end{figure}
+                \end{minipage}
 
-            Da es große Proteine mit sehr langen Aminosäuresequenzen kürzere Sequenzen kleinerer funktionsungleicher Proteine enthalten können, reicht der ermittelte Score alleine nicht aus, da in diesem Fall sehr viele Kanten der Eingabe-Map übereinstimmen würden, sodass trotz Mis-Match der nahezu maximale Score erreicht werden würde. Bezogen auf das Beispiel zu S1 in \autoref{fig:scoring}, wäre dort der grüne Bereich vollständig vom roten Bereich eingeschlossen mit Überschneidungen in beinahe allen Kanten.
+                Da es große Proteine mit sehr langen Aminosäuresequenzen kürzere Sequenzen kleinerer funktionsungleicher Proteine enthalten können, reicht der ermittelte Score alleine nicht aus, da in diesem Fall sehr viele Kanten der Eingabe-Map übereinstimmen würden, sodass trotz Mis-Match der nahezu maximale Score erreicht werden würde. Bezogen auf das Beispiel zu S1 in \autoref{fig:scoring}, wäre dort der grüne Bereich vollständig vom roten Bereich eingeschlossen mit Überschneidungen in beinahe allen Kanten.
 
-            Um das zu umgehen, wird der \ac{JSI} verwendet, einem Maß, das die Übereinstimmung zweier Mengen A und B wie folgt bewertet:
-            $$JSI(A, B)=\frac{|A \cap B|}{|A \cup B|}$$
-            Dieser Index nimmt einen Wert von 0 an, wenn beide Mengen disjunkt sind, und nähert sich der 1 je größer die Schnittmenge ist. Im Fall des Vergleichs zweier Constellation-Maps, also zwei Hash-Mengen, wird hier bewertet, wie viele Kanten sich die beiden Maps positionsunabhängig teilen. Durch diese Unabhängigkeit reicht der JSI alleine nicht als Score aus, sodass nur in Kombination/Multiplikation mit dem S1 ein robuster Score entsteht, da beide zusammen ihre Schwächen aufheben. Der \ac{JSI} in \autoref{fig:scoring} beträgt $\frac{4}{14} \approx 0.286$, da die Schnittmenge beider Hashmengen hier gleichzeitig den S1-Score bilden und die restlichen Hashes disjunkt zueinander sind. Der S1 wäre nur noch 3, wenn eine der markierten Kanten an einer anderen Position wäre, wobei der \ac{JSI} davon unberührt bliebe.
+                Um das zu umgehen, wird der \ac{JSI} verwendet, einem Maß, das die Übereinstimmung zweier Mengen A und B wie folgt bewertet:
+                $$JSI(A, B)=\frac{|A \cap B|}{|A \cup B|}$$
+                Dieser Index nimmt einen Wert von 0 an, wenn beide Mengen disjunkt sind, und nähert sich der 1 je größer die Schnittmenge ist. Im Fall des Vergleichs zweier Constellation-Maps, also zwei Hash-Mengen, wird hier bewertet, wie viele Kanten sich die beiden Maps positionsunabhängig teilen. Durch diese Unabhängigkeit reicht der JSI alleine nicht als Score aus, sodass nur in Kombination/Multiplikation mit dem S1 ein robuster Score entsteht, da beide zusammen ihre Schwächen aufheben. Der \ac{JSI} in \autoref{fig:scoring} beträgt $\frac{4}{14} \approx 0.286$, da die Schnittmenge beider Hashmengen hier gleichzeitig den S1-Score bilden und die restlichen Hashes disjunkt zueinander sind. Der S1 wäre nur noch 3, wenn eine der markierten Kanten an einer anderen Position wäre, wobei der \ac{JSI} davon unberührt bliebe.
 
             \item \PhantomSubSub{Family-Matching}
-                \textbf{Family-Matching:}\ \ Eingabe ist eine \ac{CSV}-Tabelle mit der Zuordnung von Protein-ID und -familie. Die für das Matching verwendeten Hashes sind hier diejenigen, die sich alle Mitglieder einer Suchfamilie teilen. Die Idee dahinter ist, dass diese Hashes spezifisch für diese Familie, beziehungsweise deren Funktion ist. Als Bewertungsmaß wird dabei die Anzahl Hashes des Treffers, die mit den Familienhashes übereinstimmen.
+                \textbf{Family-Matching:}\ \ Eingabe ist eine \ac{CSV}-Tabelle mit der Zuordnung von Protein-ID und -familie. Die für das Matching verwendeten Hashes sind hier diejenigen, die sich alle Mitglieder einer Suchfamilie teilen. Die Idee dahinter ist, dass diese Hashes spezifisch für diese Familie, beziehungsweise deren Funktion ist. Als Bewertungsmaß wird dabei die Anzahl Hashes des Treffers, die mit den Familienhashes übereinstimmen. Der Vorteil dieses Ansatzes ist, dass durch die Reduktion der betrachteten Hashes die Laufzeit verringert wird.
 
-            Für die Ausgabe werden diese Treffer zusammengefasst. Dazu gibt es zwei Kriterien, den F-Score und die Schärfe (Sharpness), die nach folgender Berechnung ermittelt werden:
-            \begin{equation}
-                \begin{split}
-                    t & = \texttt{max\_score}(TrP)\\
-                    Sharpness & = \begin{cases}
-                                      \frac{t-\texttt{max\_score}(FP)}{t},& \text{if t} > 0\\
-                                      \sminus 1,& \text{sonst}
-                                  \end{cases}\\
-                    Precision & = \frac{|TrP|}{|TrP|+|FP|}\\
-                    Recall & = \frac{|TrP|}{|TrP|-member\_count}\\
-                    F\_Score & = \frac{2 \cdot Precision \cdot Recall}{Precision + Recall}
-                \end{split}
-            \end{equation}
+                Für die Ausgabe werden diese Treffer zusammengefasst. Dazu gibt es zwei Kriterien, den F-Score und die Schärfe (Sharpness), die nach folgender Berechnung ermittelt werden:
+                \begin{equation}
+                    \begin{split}
+                        t & = \texttt{max\_score}(TrP)\\
+                        Sharpness & = \begin{cases}
+                                          \frac{t-\texttt{max\_score}(FP)}{t},& \text{if t} > 0\\
+                                          \sminus 1,& \text{sonst}
+                                      \end{cases}\\
+                        Precision & = \frac{|TrP|}{|TrP|+|FP|}\\
+                        Recall & = \frac{|TrP|}{|TrP|-member\_count}\\
+                        F\_Score & = \frac{2 \cdot Precision \cdot Recall}{Precision + Recall}
+                    \end{split}
+                \end{equation}
 
-            TrP ist hierbei die Menge der Treffer, die tatsächlich in der Familie vorkommen (true positives), wobei FP diejenigen sind, die das nicht tun (false positives) und einen besseren Score als der letzte korrekte Treffer haben. ``member\_count'' ist die Anzahl an Mitgliedern der Familie.
+                TrP ist hierbei die Menge der Treffer, die tatsächlich in der Familie vorkommen (true positives), wobei FP diejenigen sind, die das nicht tun (false positives) und einen besseren Score als der letzte korrekte Treffer haben. ``member\_count'' ist die Anzahl an Mitgliedern der Familie.
 
-            Die Schärfe stellt das Verhältnis der besten Scores von FP und TrP dar, also wie weit der beste korrekte Treffer im Score von dem besten falschen Treffer entfernt ist.
+                Die Schärfe stellt das Verhältnis der besten Scores von FP und TrP dar, also wie weit der beste korrekte Treffer im Score von dem besten falschen Treffer entfernt ist.
 
-            Die Präzision gibt an, wie viele der Treffer korrekt gewesen sind, während der Recall zeigt, wie viele der Familienmitglieder gefunden wurden. Der F-Score bringt diese beiden Werte zusammen.
+                Die Präzision gibt an, wie viele der Treffer korrekt gewesen sind, während der Recall zeigt, wie viele der Familienmitglieder gefunden wurden. Der F-Score bringt diese beiden Werte zusammen.
 
-            Die Ausgabe als \ac{CSV}-Tabelle beinhaltet aktuell diese Zusammenfassung zu Entwicklungszwecken. Sollte \protfin\ ausgereift sein, wird die Ausgabe vermutlich die Treffer je Suchfamilie enthalten. In den Spalten wird folgendes dokumentiert:
-            \begin{enumerate}[1.]
-                \item Family\_ID $\rightarrow$ ID der Suchfamilie
-                \item F\_Score
-                \item Precision
-                \item Recall
-                \item Sharpness 
-                \item Member\_Count $\rightarrow$ Anzahl der Mitglieder der Suchfamilie
-                \item Match\_Count $\rightarrow$ Anzahl gefundener Treffer
-                \item Hash\_Intersec\_Size $\rightarrow$ Anzahl der Hashes, die sich die Mitglieder teilen
-            \end{enumerate}
+                Die Ausgabe als \ac{CSV}-Tabelle beinhaltet aktuell diese Zusammenfassung zu Entwicklungszwecken. Sollte \protfin\ ausgereift sein, wird die Ausgabe vermutlich die Treffer je Suchfamilie enthalten. In den Spalten wird folgendes dokumentiert:
+                \begin{enumerate}[1.]
+                    \item Family\_ID $\rightarrow$ ID der Suchfamilie
+                    \item F\_Score
+                    \item Precision
+                    \item Recall
+                    \item Sharpness 
+                    \item Member\_Count $\rightarrow$ Anzahl der Mitglieder der Suchfamilie
+                    \item Match\_Count $\rightarrow$ Anzahl gefundener Treffer
+                    \item Hash\_Intersec\_Size $\rightarrow$ Anzahl der Hashes, die sich die Mitglieder teilen
+                \end{enumerate}
         \end{enumerate}
 
     % subsection grundalgorithmus (end)
     \subsection{Experiment 1: UniRef90 Sampling} % (fold)
-        \label{sub:experiment_1_uniref90_sampling}
-        Ein wichtiger Bestandteil des \hyperref[sec:grundalgorithmus]{Algorithmus} ist die Selektion signifikanter Frequenzen zur Erstellung der Constellation-Map. Es wäre möglich, einfach alle Frequenzen auszuwählen und die Signalstärke in den Hash einfließen zu lassen. Problem hierbei ist aber, dass diese Vorgehensweise zu wesentlich mehr Hashes und einer folglich sehr großen Datenbank führt, was wiederum das Scoring/Matching verlangsamt. Ein Anspruch an \protfin\ ist, dass die Datenbankgröße die Eingabegröße nicht wesentlich übersteigt, wobei es sich bei der Eingabe um eine einfache FASTA-Datei handelt.
+        \label{exp:uniref90}
+        Ein Bestandteil der Strukturanalyse in \autoref{alg:strukturdaten} ist die Selektion signifikanter Frequenzen zur Erstellung der Constellation-Map. Es wäre zwar möglich, alle Frequenzen auszuwählen und dafür die Signalstärke in den Hash einfließen zu lassen, jedoch führe diese Vorgehensweise zu wesentlich mehr Hashes und einer folglich sehr großen Datenbank, was wiederum das Scoring/Matching verlangsamt. Ein Anspruch an \protfin\ ist, dass die Datenbankgröße die Eingabegröße nicht wesentlich übersteigt, wobei es sich bei der Eingabe um eine einfache FASTA-Datei handelt.
 
-        Diesem Problem soll durch ein Sampling-Experiment abgeholfen werden. Darin werden aus etwa 180 Millionen Sequenzen je ein zufälliges Fenster fester Größe für die \ac{STFT} ausgewählt, transformiert und die Signalstärken je Frequenz gemerkt. Um daraus eine Selektionsmethode abzuleiten, werden die Grenzquantile einer jeden Frequenz ermittelt, um signifikant seltene Signalstärken zu ermitteln. Folglich ist es möglich, für die Constellation-Map nur diejenigen Frequenzen zu behalten, welche in den Randzonen der Signalstärken liegen, sodass nicht nur Signale infrage kommen, die für eine besonders starke Ausprägung eines Kidera-Faktors sprechen, sondern auch für den Fall der umgekehrten Ausprägung, wie z.B. Hydrophilie statt Hydrophobie.
+        Diesem Problem soll durch ein Sampling-Experiment abgeholfen werden. Darin werden aus etwa 180 Millionen Sequenzen der UniRef90 Datenbank je ein zufälliges Fenster fester Größe für die \ac{STFT} ausgewählt, transformiert und die Signalstärken je Frequenz gemerkt. Um daraus eine Selektionsmethode abzuleiten, werden die Grenzquantile einer jeden Frequenz ermittelt, um signifikant seltene Signalstärken zu ermitteln. Folglich ist es möglich, für die Constellation-Map nur diejenigen Frequenzen zu behalten, welche in den Randzonen der Signalstärken liegen, sodass nicht nur Signale infrage kommen, die für eine besonders starke Ausprägung eines Kidera-Faktors sprechen, sondern auch für den Fall der umgekehrten Ausprägung, wie z.B. Hydrophilie statt Hydrophobie.
 
-        Der Algorithmus wird daher insofern angepasst, dass bei der Frequenz-Selektion von den Maxima der Signalstärken nur die behalten werden, die die Grenzwerte über- oder unterschreiten. Zudem wird beim Hashing je Frequenz noch die Information hinzugefügt, ob sie besonders stark oder schwach ist.
-    
+        \autoref{alg:strukturdaten} wird daher anschließend insofern angepasst, dass bei der Frequenz-Selektion in \autoref{alg:strukturdaten:selection} die gewählten Frequenzen anstelle mittels Maxima über die über- oder unterschrittenen Grenzwerte identifiziert werden. Zudem wird einem Hash je Frequenz noch mit einem Bit die Information hinzugefügt, ob sie besonders stark oder schwach ist.
+
+        Die zu klärende Frage ist, welche Grenzquantile verwendet werden müssen, um eine möglichst gute Wahl zu erzielen.
     % subsection experiment_1_uniref90_sampling (end)
-% section material_und_methoden (end)
+    \subsection{Experiment 2: Filter Hashes} % (fold)
+    \label{exp:filter_hashes}
+        Die Experimente zu vorigen Versionen von \protfin\ haben zu sehr großen Datenbanken und langsamem Matching geführt. Unter der Annahme, dass es möglich ist, die Datenbank auf Eingabegröße zu reduzieren, sollte darin je Protein nur das Notwendigste gespeichert werden. In \hyperref[exp:uniref90]{Experiment 1} wird dafür die Frequenzwahl angegangen. Alternativ soll in dem hiesigen Experiment die Größe durch einen Filter ermöglicht werden. Dazu werden nach der Datenbankerstellung nur die Einträge der quantilsmäßig seltensten Hashes behalten. Die entfernten Hashes an sich werden zudem in einer Blacklist gespeichert, um sie vor dem Matching auch aus den Hashes der Suchsequenzen zu entfernen, da ansonsten das Ergebnis verfälscht werden würde, aufgrund von fehlenden übereinstimmenden Hashes, die eigentlich da gewesen wären.
+
+        Auch in diesem Experiment muss herausgefunden werden, welches Quantil sich am besten eignet. Je kleiner es ist, desto kleiner wird auch die Datenbank, aber umso ungenauer auch das Matching. Es gilt einen guten Kompromiss zu finden.
+    % subsection filter_hashes (end)
+    \subsection{Experiment 3: \acl{TZ}} % (fold)
+    \label{exp:target_zone}
+    Die \ac{TZ} beschreibt in \autoref{fig:hashing} die maximal mögliche Kantenlänge eines Hashes, also die Anzahl Nachfolgefenster, die für das Hashing herangezogen werden. Je größer die \ac{TZ}, desto näher kommt die Constellation-Map einem vollständigen Graphen, was die Datenbankgröße entscheidend beeinflusst. Da die \ac{TZ} mit 12 Bit, also 4096, für Aminosäuresequenzen unbeschränkt ist, wird in diesem Experiment geprüft, wie viele Bit tatsächlich notwendig sind, um eine echte Einschränkung darzustellen und trotzdem ein gutes Matching zu gewährleisten. Umgesetzt wird dies in \RefAlgLine{alg:hashing}{target_zone}, wo durch die Nachfolger iteriert wird. Um die \ac{TZ} einzubeziehen, werden die hard-coded $2^{12} - 1$ mit einer zusätzlichen Variable zu $2^{target\_zone} - 1$ erweitert.
+    % subsection experiment_3_target_zone (end)
+    \subsection{Experiment 4: Selection-Method} % (fold)
+    \label{exp:selection_method}
+    Dieses letzte Experiment dieser Arbeit knüpft an \autoref{exp:uniref90} an. Dort ist die Intention, die ermittelten Grenzwerte als alleiniges Auswahlkriterium zu verwenden. Allerdings gibt es einige Ansätze, dies zu erweitern, um noch strenger zu wählen.
+    
+    \begin{enumerate}
+        \item Es wird eine Vorselektion über die bisherige Methode der Maxima getätigt und dann auf die daraus resultierenden Frequenzen der Grenzwertfilter angewandt. Zusätzlich werden auch Minima einbezogen.
+        \item Es wird eine Vorselektion mittels Maxima durchgeführt, wobei nicht die Maxima in den rohen Amplituden der Frequenzen gesucht werden, sondern in deren absoluten Abweichungen vom Grenzwert. Da die Amplituden je Frequenz möglicherweise unterschiedlich streuen, werden diese Abweichungen zur Vergleichbarkeit vorher durch die jeweilige Standardabweichung der Amplituden geteilt.
+    \end{enumerate}
+
+    Diesen beiden Methoden werden zusätzlich durch einen Parameter $k$ erweitert, welcher bestimmt, dass die ersten $k$ Frequenzen (entsprechend ihrer Reihenfolge wie im Beispiel in \autoref{fig:freq_selection}) im Nachhinein aus der Auswahl entfernt werden. Das hat den Hintergrund, dass niedrige Frequenzen hier wenig über Periodizität aussagen, da in dieser Periode nur eine oder zwei Aminosäuren betrachtet werden. Da die Amplituden auf Summen basieren, kommt es dadurch leicht zu hohen Werten.
+    % subsection experiment_4_selection_method (end)
+% section methoden (end)

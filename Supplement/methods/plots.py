@@ -19,7 +19,6 @@ def plot_scoring():
     edges = [(a, b) for a in range(4) for b in range(4)]
     edges_idx = sorted(np.random.choice(len(edges), 14, replace=False), reverse=True)
     edges = np.array(edges)[edges_idx]
-    # print(list(zip(*edges)))
     tp = edges[:10]
     qp = np.concatenate((tp[3:], edges[5:6]))
 
@@ -67,7 +66,7 @@ def plot_method():
     plt.clf()
 
     fig, ax = plt.subplots(1, 1, figsize=(14, 8))
-    set_spines_blue(ax)
+    set_spine_color(ax)
 
     signals = []
     for window in np.random.rand(20, 15):
@@ -126,7 +125,7 @@ def plot_method():
     plt.savefig("../results/plot_method.png", bbox_inches='tight')
 
 
-def set_spines_blue(ax, color=TH_COLOR):
+def set_spine_color(ax, color=TH_COLOR):
     for spine in ax.spines.values():
         spine.set_edgecolor(color)
 
