@@ -14,11 +14,12 @@
 
 % referencing algorithm lines, the custom counter is necessary when referencing same line numbers of different algorithms
 \newcounter{algline}[algorithm]
-\renewcommand{\thealgline}{Zeile \arabic{algline}}
+% \renewcommand{\thealgline}{Zeile \arabic{algline}}
+\newcommand{\alglineautorefname}{Zeile}
 \newcommand{\AlgLineLabel}[1]{
-  \addtocounter{algline}{\value{ALG@line}}  % set to current line
+  \setcounter{algline}{\value{ALG@line}}  % set to current line
   \addtocounter{algline}{-1}  % Adjust line number
-  \refstepcounter{algline}%
+  \refstepcounter{algline}%  add reference for hyperref
   \label{#1}
 }
 \algnewcommand\algorithmicforeach{\textbf{for each}}
@@ -27,6 +28,13 @@
 \newcommand{\sminus}{\scalebox{0.8}[1]{-}}
 
 \newcommand{\centerIt}[1]{\hspace*{\fill} #1 \hspace*{\fill}}  % used in table headers
+
+\newcounter{experiment}
+% \renewcommand{\theexperiment}{\arabic{experiment}}
+\newenvironment{experiment}[1]{\addtocounter{experiment}{1}\subsection{\acl{Exp.} \theexperiment: #1}\addtocounter{experiment}{-1}\refstepcounter{experiment}}{}
+\newcommand{\experimentautorefname}{\ac{Exp.}}
+\newcommand{\Exp}[1]{Exp.~\ref*{#1}}  % for referencing in captions that appear before introduction like the lof
+% \newcommand{\Exp}[1]{\hyperref[#1]{\acs{Exp.}~\ref{#1}}}  % with links inside lof to the experiments
 
 \renewcommand{\maketitle}{
   \begin{titlepage}

@@ -8,13 +8,16 @@ import numpy as np
 
 np.random.seed(0)
 TH_COLOR = "#005B99"
-plt.rcParams.update({'font.size': 15, "font.family": "serif"})
+BOXWIDTH = 5
+plt.rcParams.update({'font.size': 15, "font.family": "serif", "figure.dpi": 200})
 
 
 def main():
     plot_method()
     plot_scoring()
-    plot_single_prot_matching(pd.read_csv("../material/Target-Zone/summary.csv"), "plot_target_zone")
+    summary = pd.read_csv("../material/Target-Zone/summary.csv")
+    summary["Target_Zone"] = 2 ** summary["Target_Zone"]
+    plot_single_prot_matching(summary, "plot_target_zone")
     plot_single_prot_matching(pd.read_csv("../material/Selection-Method/summary.csv"), "plot_selection_method")
 
     summary = pd.read_csv("../material/Filter Hashes/summary.csv")
@@ -35,6 +38,34 @@ def main():
     summary = pd.read_csv("../material/Filter Hashes/summary_match_family.csv")
     plot_family_matching(summary[~summary["Hash_Use_First_Appearance"]], "plot_filter_hashes")
 
+    plot_aa_vec_example("EVKEFDGQGCFC")
+
+
+def plot_aa_vec_example(seq):
+    plt.clf()
+    fig, ax = plt.subplots(1, 1, figsize=(14, 3))
+    set_spine_color(ax)
+
+    kf = pd.read_csv("../material/Amino_Acid_Kidera_Factors.csv")
+    aa_vec = [kf[aa].iloc[3] for aa in seq]
+    ax.scatter(range(len(aa_vec)), aa_vec, color=TH_COLOR)
+    ymin, ymax = ax.get_ylim()
+    shift = (ymax - ymin) / 10 * 2.1
+    for x, y in enumerate(aa_vec):
+        ax.text(x, y - shift, y, ha="center")
+        ax.text(x, y + 2.33 + shift * .45, round(y + 2.33, 2), ha="center")
+        ax.annotate("", xy=(x, y + 2.33), xytext=(x, y), arrowprops=dict(arrowstyle="->", linestyle="--", color="black", alpha=.7))
+        ax.scatter(x, y + 2.33, color=TH_COLOR)
+
+    ymin, ymax = ax.get_ylim()
+    ax.set_ylim(ymin - shift, ymax)
+    ax.set_xticks(range(len(aa_vec)))
+    ax.set_xticklabels(seq)
+
+    disable_spines(ax)
+
+    plt.savefig("../results/aa_vec.png", bbox_inches='tight')
+
 
 def plot_single_prot_matching(summary: pd.DataFrame, out_file):
     plt.clf()
@@ -49,8 +80,6 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
     )
     norm = Normalize(vmin=0, vmax=summary["Self_Matches"].max())
 
-    boxwidth = 5
-
     def add_gradient_box(ax, position, color_val, ylim):
         gradient = np.linspace(0, 1, 256).reshape(1, -1)
         gradient = np.vstack((gradient, gradient))
@@ -61,28 +90,18 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
                 'custom_cmap2',
                 [(0, 'white'), (.5, cmap(norm(color_val))), (1, 'white')]
             ),
-            extent=[position - .5 * boxwidth, position + .5 * boxwidth, *ylim],
+            extent=[position - .5 * BOXWIDTH, position + .5 * BOXWIDTH, *ylim],
             alpha=0.2
         )
 
     boxes = []
 
-    def boxplot(ax, position, data):
-        box = ax.boxplot([data["DB_Size_MB"]], positions=[position],
-                         widths=boxwidth,
-                         boxprops=dict(linewidth=3),
-                         **{i: dict(linewidth=3) for i in ["whiskerprops", "capprops"]},
-                         showfliers=False
-                         )["boxes"]
-        boxes.append((data.get("Mean_Sharpness", np.zeros(1)).mean(), *box))
-        gradient_boxes.append((position, data["Unique_Self_Matches"].mean()))
-
     gradient_boxes = []
-    special_params = tuple(i for i in ("Significance", "Quantile", "Skip_First_K_Freqs") if i in summary)
+    special_params = tuple(i for i in ("Significance", "Target_Zone", "Quantile", "Skip_First_K_Freqs") if i in summary)
     if len(special_params):
         groups = summary.groupby(["Window_Size", *special_params])
         special_params = ("Fenstergröße",
-            *(i.replace("le", "l").replace("cance", "kanz").replace("Skip_First_K_Freqs", "k") for i in special_params)
+            *(i.replace("le", "l").replace("cance", "kanz").replace("Skip_First_K_Freqs", "k").replace("_","-") for i in special_params)
         )
 
         plt.clf()
@@ -93,30 +112,18 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
 
         xticklabels = []
         for pos, (params, data) in enumerate(groups):
-            boxplot(ax, pos * 10, data)
+            boxes.append((data.get("Mean_Sharpness", np.zeros(1)).mean(), boxplot(ax, pos * 10, data, "DB_Size_MB")))
+            gradient_boxes.append((pos * 10, data["Unique_Self_Matches"].mean()))
             xticklabels.append("\n".join(str(i) for i in params))
         ax.set_xticklabels(xticklabels)
         ax.set_xlabel("\n".join(special_params))
     else:
         for win_size, data in sorted(summary.groupby("Window_Size"), key=lambda x: x[1]["DB_Size_MB"].max(), reverse=True):
-            boxplot(ax, win_size, data)
+            boxes.append((data.get("Mean_Sharpness", np.zeros(1)).mean(), boxplot(ax, win_size, data, "DB_Size_MB")))
+            gradient_boxes.append((win_size, data["Unique_Self_Matches"].mean()))
         ax.set_xlabel("Fenstergröße")
 
-    for i, (sharpness, patch) in enumerate(boxes):
-        # Get the box's coordinates
-        # patch.set_facecolor("white")
-        path = patch.get_path()
-        vertices = path.vertices
-        x0, y0 = vertices[0]
-        x1, y1 = vertices[2]
-        # Calculate the height of the filled portion
-        box_height = y1 - y0
-        filled_height = box_height * sharpness
-        # Create a filled rectangle patch
-        filled_box = plt.Rectangle((x0, y0), x1 - x0, box_height, color="white")
-        ax.add_patch(filled_box)
-        filled_box = plt.Rectangle((x0, y0), x1 - x0, filled_height, color=TH_COLOR, alpha=.8)
-        ax.add_patch(filled_box)
+    patch_sharpness(ax, boxes)
 
     ylim = ax.get_ylim()
     for b in gradient_boxes:
@@ -124,7 +131,7 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
     ax.autoscale(enable=True, axis='x', tight=True)
     # ax.autoscale(enable=True, axis='y', tight=True)
     xmin, xmax = ax.get_xlim()
-    ax.set_xlim(xmin - .25 * boxwidth, xmax + .25 * boxwidth)
+    ax.set_xlim(xmin - .25 * BOXWIDTH, xmax + .25 * BOXWIDTH)
     plt.colorbar(ScalarMappable(cmap=cmap, norm=norm), ax=plt.gca()).set_label("Unique Self Matches", rotation=-90, va="bottom")
 
     ax.set_ylabel("Datenbankgröße (MB)")
@@ -132,14 +139,41 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
     plt.savefig("../results/%s.sp.png" % out_file, bbox_inches='tight')
 
 
+def boxplot(ax, position, data, y_col):
+    box = ax.boxplot([data[y_col]], positions=[position],
+                     widths=BOXWIDTH,
+                     **{i: dict(linewidth=3) for i in ["boxprops", "whiskerprops", "capprops"]},
+                     medianprops=dict(linewidth=2),
+                     showfliers=False
+                     )["boxes"]
+    return box[0]
+
+
+def patch_sharpness(ax, boxes):
+    for i, (sharpness, patch) in enumerate(boxes):
+        # Get the box's coordinates
+        path = patch.get_path()
+        vertices = path.vertices
+        x0, y0 = vertices[0]
+        x1, y1 = vertices[2]
+        # Calculate the height of the filled portion
+        box_height = y1 - y0
+        filled_height = box_height * sharpness if sharpness > 0 else 0
+        # Create a filled rectangle patch
+        filled_box = plt.Rectangle((x0, y0), x1 - x0, box_height, color="white")
+        ax.add_patch(filled_box)
+        filled_box = plt.Rectangle((x0, y0), x1 - x0, filled_height, color=TH_COLOR, alpha=.8)
+        ax.add_patch(filled_box)
+
+
 def plot_family_matching(summary: str, out_file):
     plt.clf()
     fig, ax = plt.subplots(1, 1, figsize=(14, 6))
     set_spine_color(ax)
 
-    boxwidth = 5
+    boxes = []
 
-    special_params = tuple(i for i in ("Significance", "Quantile", "Skip_First_K_Freqs") if i in summary)
+    special_params = tuple(i for i in ("Target_Zone", "Significance", "Quantile", "Skip_First_K_Freqs") if i in summary)
     if len(special_params):
         groups = summary.groupby(["Window_Size", *special_params])
         special_params = ("Fenstergröße",
@@ -153,27 +187,20 @@ def plot_family_matching(summary: str, out_file):
         xticklabels = []
 
         for pos, (params, data) in sorted(enumerate(groups), key=lambda x: x[1][1]["Average_F_Score"].max(), reverse=True):
-            ax.boxplot([data["Average_F_Score"]], positions=[pos * 10],
-                       widths=boxwidth,
-                       **{i: dict(linewidth=3) for i in ["boxprops", "whiskerprops", "capprops"]},
-                       showfliers=False
-                       )
+            boxes.append((data.get("Average_Sharpness", np.zeros(1)).mean(), boxplot(ax, pos * 10, data, "Average_F_Score")))
             xticklabels.append("\n".join(str(i) for i in params))
         ax.set_xticklabels(xticklabels)
         ax.set_xlabel("\n".join(special_params))
     else:
         for win_size, data in sorted(summary.groupby("Window_Size"), key=lambda x: x[1]["Average_F_Score"].max(), reverse=True):
-            ax.boxplot([data["Average_F_Score"]], positions=[win_size],
-                       widths=boxwidth,
-                       **{i: dict(linewidth=3) for i in ["boxprops", "whiskerprops", "capprops"]},
-                       showfliers=False
-                       )
+            boxes.append((data.get("Average_Sharpness", np.zeros(1)).mean(), boxplot(ax, win_size, data, "Average_F_Score")))
         ax.set_xlabel("Fenstergröße")
 
+    patch_sharpness(ax, boxes)
+
     ax.autoscale(enable=True, axis='x', tight=True)
-    # ax.autoscale(enable=True, axis='y', tight=True)
     xmin, xmax = ax.get_xlim()
-    ax.set_xlim(xmin - .25 * boxwidth, xmax + .25 * boxwidth)
+    ax.set_xlim(xmin - .25 * BOXWIDTH, xmax + .25 * BOXWIDTH)
 
     ax.set_ylabel("F1-Score")
     ax.set_title("Family-Matching Ergebnisse")
@@ -201,7 +228,7 @@ def plot_scoring():
 
     first_hit_freq = min(tp[6][0], tp[7][0])
     y_min, y_max = ax.get_ylim()
-    # ax.annotate("", xy=(2, y_min), xytext=(2, first_hit_freq), arrowprops=dict(arrowstyle="->", linestyle="--", color="black", alpha=.8))
+    # ax.annotate("", xy=(2, y_min), xytext=(2, first_hit_freq), arrowprops=dict(arrowstyle="->", linestyle="--", color="black"))
 
     # draw right constellation map (Query)
     ax.plot((2, len(edges)//2 -.8), (y_max, y_max), color="green", linewidth=3)
@@ -218,16 +245,26 @@ def plot_scoring():
     _, y_max = ax.get_ylim()
     ax.set_ylim(y_min, y_max + .1)
 
-    for s in ax.spines.values():
-        s.set_visible(False)
-    ax.spines["bottom"].set_visible(True)
+    disable_spines(ax)
 
-    ax.set_yticklabels([])
-    ax.set_yticks([])
     ax.set_xlabel("Offset")
     # ax.set_ylabel("Frequenz")
     ax.set_title("Ermittlung des S1-Score", fontdict={"fontweight": "bold"})
     plt.savefig("../results/plot_scoring.png", bbox_inches='tight')
+
+
+def disable_spines(ax, keep="bottom"):
+    for s in ax.spines.values():
+        s.set_visible(False)
+
+    if keep != "left":
+        ax.set_yticklabels([])
+        ax.set_yticks([])
+    if keep != "bottom":
+        ax.set_xticklabels([])
+        ax.set_xticks([])
+    if keep in ax.spines:
+        ax.spines[keep].set_visible(True)
 
 
 def plot_method():
