@@ -15,11 +15,6 @@
     % Erhalt numerischer Vektoren
     \subsection{Grundalgorithmus} % (fold)
         \label{sub:grundalgorithmus}
-        \newcommand{\PhantomSubSub}[1]{
-            \phantomsection
-            % \addtocounter{subsubsection}{1}
-            % \addcontentsline{toc}{subsubsection}{\protect\numberline{\thesubsubsection} #1}}
-            \addcontentsline{toc}{subsubsection}{#1}}
         \begin{algorithm}[H]
             \caption{Übersetzen einer Aminosäuresequenz in einen numerischen Vektor}\label{alg:vorbereitung}
             \PhantomSubSub{Übersetzen einer Aminosäuresequenz in einen numerischen Vektor}
@@ -27,12 +22,12 @@
             \begin{algorithmic}[1]
                 \Require $sequence \in \{ \text{A-Z}, \I\Psi\I, \I\Omega\I, \I\Phi\I, \I\zeta\I, \I\Pi\I, \I\text{+}\I, \I\text{-}\I\}^{*} $
                 \Require $0 \leq kf \leq 10$
-                \Ensure $|aa\_vector| = |sequence|$
+                \Ensure $|aa\_vector| = |sequence|$ \Comment $aa = \emph{Aminosäure}$
                 \Ensure $v \geq 0\ \forall\ v \in aa\_vector$ 
 
                 \State $aa\_vector \gets \texttt{array}()$
                 \ForEach{$aa$}{$sequence$}
-                    \State $kf\_value \gets \texttt{get\_kf\_value}(aa, kf)$
+                    \State $kf\_value \gets \texttt{get\_kf\_value}(aa, kf)$ \Comment $kf=Kidera\ Faktor$
                     \State $min\_kf\_value \gets \texttt{get\_min\_kf\_value}()$
                     \State $aa\_vector.\texttt{append}(kf\_value + \texttt{abs}(min\_kf\_value))$
                 \EndFor
@@ -55,13 +50,13 @@
             {\KFD & \A  & \C & \D & \E & \F & \G & \dots}
         \end{table}
 
-        Folglich kann eine Aminosäuresequenz pro Faktor in einen numerischen Vektor übersetzt werden, wobei ein höherer absoluter Wert für mehr Relevanz des Faktors steht.
+        Folglich kann eine Aminosäuresequenz pro \ac{KF} in einen numerischen Vektor übersetzt werden, wobei ein höherer absoluter Wert für mehr Relevanz des \ac{KF} steht.
 
         Da für die Fourier Transformation negative Werte problematisch sind, wird der Vektor anschließend dahingehend normalisiert, dass das absolute Minimum aller Werte aus \autoref{tab:kidera} aufaddiert wird. Das absolute Minimum ist 2.33, sodass die Übersetzung der Beispielsequenz \texttt{EVKEFDGQGCFC} für die Hydrophobizität folgendermaßen geschehe:
 
         \begin{figure}[H]
             \includegraphics[width=\textwidth]{aa_vec.png}
-            \caption{Beispielsequenz als numerische Repräsentation}
+            \caption[Beispielsequenz als numerische Repräsentation]{Beispielsequenz als numerische Repräsentation: Die horizontale Linie ist die Nulllinie}
             \label{fig:normalization}
         \end{figure}
 
@@ -71,7 +66,7 @@
             \caption{Sammeln von Strukturdaten}\label{alg:strukturdaten}
             \PhantomSubSub{Sammeln von Strukturdaten}
             \begin{algorithmic}[1]
-                \Require $aa\_vector$ aus \autoref{alg:vorbereitung}
+                \Require $aa\_vector$ aus \autoref{alg:vorbereitung} \Comment $aa = \emph{Aminosäure}$
                 \Ensure $constellation\_map$ is an Array of Arrays of Floats
 
                 \State $constellation\_map \gets \texttt{array}()$
@@ -123,6 +118,7 @@
             \label{fig:hashing}
         \end{figure}
 
+        \newpage
         Die Hashfunktion ist bijektiv gestaltet, sodass aus einem Hash all seine Bestandteile, die für die Erstellung verwendet wurden, eindeutig abgeleitet werden können. Das hängt damit zusammen, dass diese Bestandteile auf Bit-Ebene hintereinandergereiht werden, nämlich nach folgendem Schema:
 
         \begin{figure}[H]
@@ -133,14 +129,14 @@
                 \hline
                 \Col{0.1875}{6 Bit} & \Col{0.125}{ 4 Bit} & \Col{0.375}{12 Bit} & \Col{0.15625}{5 Bit} & \Col{0.15625}{5 Bit}\\
                 \hline
-                \centering \textit{unbelegt} & \centering Kidera Faktor & \centering Kantenlänge/Fensterabstand & \centering Frequenz Nachfolger & \centering Frequenz Ursprung
+                \centering \textit{unbelegt} & \centering \acl{KF} & \centering Kantenlänge/Fensterabstand & \centering Frequenz Nachfolger & \centering Frequenz Ursprung
                 % 4 Bit & 18 Bit & 5 Bit & 5 Bit\\
             \end{tabular}
             \caption{Schematischer Aufbau eines Hashes}
             \label{fig:hash}
         \end{figure}
 
-        Für 10 Faktoren reichen 4 Bit. Die Fenstergrößen belaufen sich auf unter 64, sodass mit 5 Bit alle möglichen Frequenzen abgedeckt werden können. Da die Anzahl Frequenzen immer gleich ist, können diese aufsteigend durchnummeriert werden, sodass die x-Achse in \autoref{fig:freq_selection} der Folge von 0 bis 15 entspräche. 12 Bit enthalten die ``Kantenlänge'' eines Hashes. Die restlichen 6 Bits zu einem 32-Bit Integer können in der weiteren Entwicklung von \protfin\ beliebig belegt werden.
+        Für 10 \acl{KF} reichen 4 Bit. Die Fenstergrößen belaufen sich auf unter 64, sodass mit 5 Bit alle möglichen Frequenzen abgedeckt werden können. Da die Anzahl Frequenzen immer gleich ist, können diese aufsteigend durchnummeriert werden, sodass die x-Achse in \autoref{fig:freq_selection} der Folge von 0 bis 15 entspräche. 12 Bit enthalten die ``Kantenlänge'' eines Hashes. Die restlichen 6 Bits zu einem 32-Bit Integer können in der weiteren Entwicklung von \protfin\ beliebig belegt werden.
 
         % Erstellung der Datenbank
         \begin{algorithm}[H]
@@ -152,8 +148,8 @@
 
                 \State $database \gets \texttt{hashmap}()$
                 \ForEach{$protein\_id, sequence$}{$fasta$}
-                    \For{$kf \gets 0\ \textbf{to}\ 10$}
-                        \State $aa\_vector \gets \texttt{get\_aa\_vector}(sequence, kf)$
+                    \For{$kf \gets 0\ \textbf{to}\ 10$} \Comment $kf=Kidera\ Faktor$
+                        \State $aa\_vector \gets \texttt{get\_aa\_vector}(sequence, kf)$ \Comment $aa = \emph{Aminosäure}$
                         \State $constellation\_map \gets \texttt{get\_constellation\_map}(aa\_vector)$
                         \State $hashes \gets \texttt{get\_hashes}(constellation\_map, protein\_id)$
                         \ForEach{$hash$}{$hashes$}
@@ -168,13 +164,15 @@
             \end{algorithmic}
         \end{algorithm}
 
-        Die ersten drei beschriebenen Algorithmen beschreiben den Weg von einer Aminosäuresequenz in Textform zu den Hashes, die die strukturelle Information des Proteins entsprechend der spektralen Zerlegung mittels \ac{STFT} repräsentieren sollen. Übrig bleibt nur der Schritt, der die Hashes einer Menge von mehreren Proteinen in einer Datenbank vereinigt, sodass im Anschluss die Identifizierung von Eingabesequenzen erfolgen kann. Dafür werden je \ac{TP} für alle Kidera-Faktoren die Hashes gebildet und in die Datenbank geschrieben, welche eine HashMap ist. Im Gegensatz zu der resultierenden HashMap in \autoref{alg:hashing} verweisen die Hashes in der Datenbank allerdings nicht auf eine Position des Hashes für ein Protein, sondern auf eine Liste von solchen. Das heißt, dass für die Datenbank ein neuer Hash mit einem leeren Array initialisiert wird, in das darauf all diese Position-Protein\_ID-Tupel eingefügt werden.
+        Die ersten drei beschriebenen Algorithmen beschreiben den Weg von einer Aminosäuresequenz in Textform zu den Hashes, die die strukturelle Information des Proteins entsprechend der spektralen Zerlegung mittels \ac{STFT} repräsentieren sollen. Übrig bleibt nur der Schritt, der die Hashes einer Menge von mehreren Proteinen in einer Datenbank vereinigt, sodass im Anschluss die Identifizierung von Eingabesequenzen erfolgen kann. Dafür werden je \ac{TP} für alle Kidera-Faktoren die Hashes gebildet und in die Datenbank geschrieben, welche eine HashMap ist. Im Gegensatz zu der resultierenden HashMap in \autoref{alg:hashing} verweisen die Hashes in der Datenbank allerdings nicht auf eine Position des Hashes für ein Protein, sondern auf eine Liste von solchen. Das heißt, dass für die Datenbank ein neuer Hash mit einem leeren Array initialisiert wird, in das darauf all diese Position-Protein-ID-Tupel eingefügt werden.
+
+        Version 4.0 von \protfin\ ist in Python implementiert. Von daher wird für die Persistierung der Datenbank (\texttt{save\_to\_file}) zur Einfachheit das \texttt{pickle}-Modul verwendet, welches Python-Objekte effizient in Dateien ablegen kann.
 
         % hierzu ein Plot zur Veranschaulichung der Offsets
         % Scoring/Map-Vergleich
         Wurde die Datenbank erstellt, ist sie für die Identifizierung funktionsähnlicher Proteine anhand einer Eingabe verwendbar. Hierfür gibt es zwei Ansätze:
         \begin{enumerate}[a)]
-            \item \PhantomSubSub{Single-Protein-Matching}
+            \item \PhantomSubSub[sp.matching]{Single-Protein-Matching}
                 \textbf{Single-Protein-Matching:}\ \ Eingabe ist eine FASTA-Datei, also eine Menge an Suchsequenzen. Ausgabe je Sequenz ist eine Liste von Treffern, sortiert nach Übereinstimmung der Hashes der Constellation-Maps von Treffer und Suchsequenz. Je höher der Rang eines Treffers, desto funktionsähnlicher sollte das entsprechende Protein sein. Die Ausgabe sind \ac{CSV}, also eine durch Kommata separierte Tabelle, mit folgenden Spalteninhalten:
                 \begin{enumerate}[1.]
                     \item Rank $\rightarrow$ Rang
@@ -195,7 +193,7 @@
                             \Require $database$ aus \autoref{alg:datenbank}
                             \Ensure $match\_scores$ is a HashMap of: $String \rightarrow Float$
 
-                            \State $matches\_per\_tp \gets \texttt{hashmap}()$
+                            \State $matches\_per\_tp \gets \texttt{hashmap}()$ \Comment $tp=Trainings Protein$
                             \ForEach{$hash, position$}{$hashes$}
                                 \If{$hash\ \textbf{in}\ database$}
                                     \ForEach{$tp\_position, protein\_id$}{$database[hash]$}
@@ -299,7 +297,7 @@
     \end{experiment}
     \begin{experiment}{\acl{TZ}} % (fold)
         \label{exp:target_zone}
-        Die \ac{TZ} beschreibt in \autoref{fig:hashing} die maximal mögliche Kantenlänge eines Hashes, also die Anzahl Nachfolgefenster, die für das Hashing herangezogen werden. Je größer die \ac{TZ}, desto näher kommt die Constellation-Map einem vollständigen Graphen, was die Datenbankgröße entscheidend beeinflusst. Da die \ac{TZ} mit 12 Bit (\autoref{fig:hash}), also 4096, für Aminosäuresequenzen nahezu unbeschränkt ist, wird in diesem Experiment geprüft, wie viele Bit tatsächlich notwendig sind, um eine echte Einschränkung darzustellen und trotzdem ein gutes Matching zu gewährleisten. Umgesetzt wird dies in \RefAlgLine{alg:hashing}{target_zone}, wo durch die Nachfolger iteriert wird. Um die \ac{TZ} einzubeziehen, werden die hard-coded $2^{12} - 1$ mit einer zusätzlichen Variable zu $2^{target\_zone\_bits} - 1$ erweitert. Als Selektiosmethode wird der Ansatz aus \autoref{exp:uniref90} verwendet
+        Die \ac{TZ} beschreibt in \autoref{fig:hashing} die maximal mögliche Kantenlänge eines Hashes, also die Anzahl Nachfolgefenster, die für das Hashing herangezogen werden. Je größer die \ac{TZ}, desto näher kommt die Constellation-Map einem vollständigen Graphen, was die Datenbankgröße entscheidend beeinflusst. Da die \ac{TZ} mit 12 Bit (\autoref{fig:hash}), also 4096, für Aminosäuresequenzen nahezu unbeschränkt ist, wird in diesem Experiment geprüft, wie viele Bit tatsächlich notwendig sind, um eine echte Einschränkung darzustellen und trotzdem ein gutes Matching zu gewährleisten. Umgesetzt wird dies in \RefAlgLine{alg:hashing}{target_zone}, wo durch die Nachfolger iteriert wird. Um die \ac{TZ} einzubeziehen, werden die hard-coded $2^{12} - 1$ mit einer zusätzlichen Variable zu $2^{target\_zone\_bits} - 1$ erweitert. Als Selektiosmethode wird der Ansatz aus \autoref{exp:uniref90} verwendet.
     \end{experiment}
     \begin{experiment}{Selection-Method} % (fold)
         \label{exp:selection_method}
@@ -339,6 +337,7 @@
              Overlap     & 0  & 25\%  & 50\%   & 75\%   &$\ac{FG}-1$&~\ref{exp:uniref90},~\ref{exp:filter_hashes},~\ref{exp:target_zone}\\
                          &    & 25\%  & 50\%   & 75\%   &           &~\ref{exp:selection_method}\\
              \acl{TZ}    & 8  & 16    & 32     & 64     &           &~\ref{exp:target_zone}\\
+                         & 8  &       &        &        &           &~\ref{exp:selection_method}\\
              Quantil     &0.1 & 0.2   & \dots  & 0.9    & 1         & ~\ref{exp:filter_hashes}\\
              Signifikanz &5\% & 0.1\% & 0.01\% & 0.001\%&           &~\ref{exp:uniref90}\\
                          &    &       & 0.01\% & 0.001\%&           &~\ref{exp:selection_method}\\

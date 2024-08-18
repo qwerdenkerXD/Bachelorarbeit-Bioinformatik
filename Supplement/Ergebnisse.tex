@@ -1,13 +1,5 @@
 \section{Ergebnisse} % (fold)
     \label{sec:ergebnisse}
-    % Die Ergebnisse der beiden Matching-Ansätze sind in eigenen Abbildungen dargestellt. Aufgrund der vielen betrachteten Parameter handelt es sich hierbei um Box-Plots, wobei die Boxen der x-Achse entlang primär nach der jeweiligen \acf{FG} gruppiert sind und gegebenenfalls zusätzlich nach Parametern, die für das Experiment spezifisch sind. In beiden Fällen sind die Boxen teilweise blau gefüllt. Je größer der blaue Anteil ist, desto höher ist die in \autoref{equ:f_score auf Seite~ \pagereequ:f_score} beschriebene Schärfe, die für das Single-Protein-Matching auf dieselbe Weise berechnet wird. Sollte die Schärfe negativ sein, bleibt die Box leer.
-
-    % Beim Single-Protein-Matching bilden die Boxen die Verteilung der Datenbankgrößen ab, wobei eine orange Linie innerhalb der Box den Median darstellt und die Whiskers maximal die Länge des 1.5-fachen Interquartilabstands annehmen. Zusätzlich befindet sich hinter, beziehungsweise über und unter der Box, eine farbige Markierung, welche angibt, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert worden sind. Diese erfolgreichen Treffer werden hier als ``Unique Self Matches'' bezeichnet.
-
-    % Beim Family-Matching ist auf der y-Achse der in \autoref{equ:f_score auf Seite~ \pagereequ:f_score} beschriebene F-Score vertreten. Da es hier im Gegensatz zur Datenbankgröße je Parameter-Kombination mehrere Werte gibt, also pro Familie eine, und die Boxen die Ergebnisse pro Kombination wiederspiegeln, fließen die jeweiligen Mittelwerte der der F-Scores ein.
-
-    % In \autoref{fig:frequencies_uniref}
-
     \subsection{UniRef90 Sampling} % (fold)
         \label{sub:uniref90_results}
         \begin{figure}[H]
@@ -54,7 +46,7 @@
             \label{fig:uniref90.sp}
         \end{figure}
 
-        Ursprünglich war \autoref{exp:uniref90} so konzipiert, dass nur das ein 5\%-alpha ermittelt wird. Da die Datenbanken aber weiterhin zu groß sind, wie in \autoref{fig:uniref90.sp} zu sehen, wurde es um die strengeren Signifikanzniveaus erweitert. Die Identifizierung ist ab \ac{FG} 20 sehr gut und hat eine nahezu 100\%-ige Schärfe. \ac{FG} 10 ist zwar unter der Eingabegröße, scheitert aber bei der Identifikation und wurde daher nicht für alle Experimente betrachtet. 
+        Ursprünglich war \autoref{exp:uniref90} so konzipiert, dass nur das ein 5\%-alpha ermittelt wird. Da die Datenbanken aber weiterhin zu groß sind, wie in \autoref{fig:uniref90.sp}, \autoref{sub:filter_results} und \autoref{sub:target_results} zu sehen, wurde es um die strengeren Signifikanzniveaus erweitert. Die Identifizierung ist ab \ac{FG} 20 sehr gut und hat eine nahezu 100\%-ige Schärfe. \ac{FG} 10 ist zwar unter der Eingabegröße, scheitert aber bei der Identifikation und wurde daher nicht für alle Experimente betrachtet. 
     
     % subsection uniref90_sampling (end)
     \subsection{Filter Hashes} % (fold)
@@ -93,6 +85,31 @@
     \subsection{Selection-Method} % (fold)
         \label{sub:selection_results}
         Da das \autoref{exp:target_zone} in \autoref{sub:target_results} aufgrund zu hoher Laufzeit vorzeitig abgebrochen wurde, wurde in dem hiesigen Experiment die Datenbankerstellung bei zu hoher Größe abgebrochen. Lediglich der Selektionsansatz, der die Maxima der absoluten Grenzwertabweichungen auswählt, hat zur Fertigstellung geführt, sodass das Matching nur für diese Datenbanken erfolgen konnte.
+
+        Die vorigen Ergebnisse haben veranlasst, wie in \autoref{sub:uniref90_results} erwähnt, das Signifikanzniveau von 5\% zu verringern, sodass zusätzlich die Grenzwerte für $\alpha \in \{0.1, 0.01, 0.001\}$ ermittelt wurden. Um die Laufzeit dieses Experiments durch zu viele Parameterwerte nicht unnötig zu erhöhen, wurden vor der Durchführung die pro \ac{TP} selektierten Frequenzen gezählt und die mittlere Anzahl Frequenzen pro Fenster ermittelt, um die zu testenden $\alpha$-Werte zu begrenzen.
+
+        \begin{figure}
+             \includegraphics[width=\textwidth]{plot_mean_frequencies.png}
+             \caption{Mittlere Frequenzzahl pro Fenster einer Sequenz}
+             \label{fig:mean_frequencies}
+        \end{figure} 
+
+        In \autoref{fig:mean_frequencies} wird deutlich, dass die Verringerung der Signifikanz die Anzahl der gewählten Frequenzen reduziert. Für $\alpha=5\%$ sind es deutlich zu viele Frequenzen, da die Anzahl aufgrund der geringen Streuung offenbar lediglich durch $n\_peaks$ limitiert wird. Wenn eine Datenbank nicht größer als die Eingabe sein soll, dürfen die Daten einer Sequenz nicht den Speicherbedarf der Textrepräsentation ihrer Aminosäuren überschreiten. Diese Zeichen sind Teil des \ac{ASCII} und benötigen daher nur 1 Byte Speicher, was bedeutet, dass bei einer Sequenz der \ac{TP} mit einer medialen Länge von etwa 300 Aminosäuren nur ebensoviele Bytes verwendet werden dürften. Hierzu eine Rechnung unter der Annahme, es gäbe nur eine Frequenz pro Fenster:
+        \begin{equation}
+            \begin{split}
+                target\_zone &= 8\\
+                \emph{fenster\_größe} &= 30\\
+                \emph{überlappung} &= 15\\
+                \emph{sequenz\_länge} &= 300\\
+                anzahl\_fenster &= \frac{\emph{sequenz\_länge}}{\emph{fenster\_größe} - \emph{überlappung}} = 20\\
+                \emph{hash\_größe} &= 32 Bit = 4 Byte\\
+                speicher\_pro\_kf &= target\_zone * anzahl\_fenster * \emph{hash\_größe} = 640\ Byte\\
+                anzahl\_kf = 10\\
+                datenbank\_speicher &= target\_zone * anzahl\_fenster * \emph{hash\_größe} * 10 = 6400\ Byte
+            \end{split}
+        \end{equation}
+
+        Selbst bei einer Frequenz pro Fenster wäre die Datenbank nach dieser Abschätzung doppelt so groß wie die Eingabe. Von daher sollte $\alpha$ die Frequenzwahl möglichst in Richtung einer Anzahl von 1 bringen, weshalb $\alpha=0.1$ nicht verwendet wird, da die Streuung hier auf meistens 2 Frequenzen pro Fenster schließen lässt. Das Matching wird von daher für die beiden kleinsten $\alpha$-Werte durchgeführt.
 
         \begin{figure}[H]
             \centering

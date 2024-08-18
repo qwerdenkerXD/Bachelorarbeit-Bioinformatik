@@ -4,21 +4,21 @@
 
     Diese Bachelorarbeit beinhaltet die Entwicklung von Version 0.4 des Projekts \protfin\footnote{\url{https://github.com/usadellab/prot-fin/releases/tag/v0.4/experiments/recog_with_fft} bei Commit \href{https://github.com/usadellab/prot-fin/tree/86ea260b7c6d7bb520b57e2b29e350bd3942fe71/experiments/recog_with_fft}{\texttt{86ea260}}} und den zugehörigen Experimenten. \protfin\ stellt sich dem Problem zufälliger Ähnlichkeit und beschäftigt sich daher mit der Frage, ob es möglich ist, funktionsähnliche Proteine über ihre physikalischen Eigenschaften zu identifizieren, anstelle der lediglichen Buchstaben ihrer Aminosäuren, und ob das die Problematik umgeht.
 
-    Eine Grundlage hierfür bildet die Arbeit von Akinori Kidera \textit{et. al.}, welcher in seiner Forschungsgruppe mittels statistischer Faktorenanalyse 188 physikalische Eigenschaften der 20 natürlich vorkommenden Aminosäuren auf lediglich 10 sogenannte Kidera-Faktoren reduziert hat, die zusammen all diese Eigenschaften am besten erklären \vgl{kidera}. So ist beispielsweise die Hydrophobizität ein ebensolcher Faktor, da diese mit vielen anderen Eigenschaften stark in Korrelation steht.
+    Eine Grundlage hierfür bildet die Arbeit von Akinori Kidera \textit{et. al.}, welcher in seiner Forschungsgruppe mittels statistischer Faktorenanalyse 188 physikalische Eigenschaften der 20 natürlich vorkommenden Aminosäuren auf lediglich 10 sogenannte \acp{KF} reduziert hat, die zusammen all diese Eigenschaften am besten erklären \vgl{kidera}. So ist beispielsweise die Hydrophobizität ein ebensolcher Faktor, da diese mit vielen anderen Eigenschaften stark in Korrelation steht.
 
-    Der Einfluss eines jeden Faktors in einer Aminosäure lässt sich numerisch darstellen, sodass eine Aminosäuresequenz in 10 Vektoren übersetzt werden kann, welche nun ein statistisch auswertbares Abbild der physikalischen Struktur des Proteins erzeugen.
+    Der Einfluss eines jeden \ac{KF} in einer Aminosäure lässt sich numerisch darstellen, sodass eine Aminosäuresequenz in 10 Vektoren übersetzt werden kann, welche nun ein statistisch auswertbares Abbild der physikalischen Struktur des Proteins erzeugen.
 
     Der Algorithmus für die Analyse dieser Struktur ist von SHAZAM inspiriert, einer Anwendung, die Musiktitel anhand kürzester Tonaufnahmen identifiziert, selbst wenn diese Störgeräusche aufweisen. Basis hierfür stellt die \ac{STFT} dar, welche in dem musikalischen Spektrum intervall-/fensterweise periodisch auftretende Signale analysiert, wodurch auch die Störgeräusche eine geringe Relevanz haben.
 
     \begin{wrapfigure}{r}{0.5\textwidth}
         \includegraphics[width=0.5\textwidth]{plot_frequency_selection.png}
-        \caption{Spektralanalyse eines Fensters der STFT mit Markierung lokaler Maxima}
+        \caption{Spektralanalyse eines Fensters der \acs{STFT} mit Markierung lokaler Maxima}
         \label{fig:freq_selection}
     \end{wrapfigure}
 
-    In \autoref{fig:freq_selection} wird dieser Sachverhalt für ein Fenster der STFT dargestellt. Es werden die Signalstärken für alle möglichen Frequenzen ermittelt, wobei das Reziproke einer Frequenz hier entspricht, jedes wievielte Element betrachtet wird. Bei Frequenz 0.5 wäre es also jedes $\frac{1}{0.5} = 2$te Element, hier offenbar sehr schwach ausgeprägt. Diese Signalstärke oder Amplitude der Frequenz wird über Summen der Originaldaten ermittelt. Frequenz 0 ist lediglich die Summe aller Eingabewerte, also hier allen Kidera-Fakor-Werten, die den numerischen Vektor der Eingabe-Aminosäurekette darstellten.
+    In \autoref{fig:freq_selection} wird dieser Sachverhalt für ein Fenster der \ac{STFT} dargestellt. Es werden die Signalstärken für alle möglichen Frequenzen ermittelt, wobei das Reziproke einer Frequenz hier entspricht, jedes wievielte Element betrachtet wird. Bei Frequenz 0.5 wäre es also jedes $\frac{1}{0.5} = 2$te Element, hier offenbar sehr schwach ausgeprägt. Diese Signalstärke oder Amplitude der Frequenz wird über Summen der Originaldaten ermittelt. Frequenz 0 ist lediglich die Summe aller Eingabewerte, also hier allen \ac{KF}-Werten, die den numerischen Vektor der Eingabe-Aminosäurekette darstellten.
 
-    Damit die Musikerkennung funktioniert, wird nun vorher eine Datenbank erstellt, welche die Periodizitäten der Eingabesongs mittels Hashing effizient auffindbar abspeichert, sodass der Abgleich mit einer Tonaufnahme sehr schnell und korrekt abläuft \vgl{wang}. Zudem werden hierfür aus den STFT-Ergebnissen auch nicht alle Frequenzen verwendet, sondern nur möglichst signifikante davon. Bisher wird das mittels der lokalen Maxima der Amplituden erreicht.
+    Damit die Musikerkennung funktioniert, wird nun vorher eine Datenbank erstellt, welche die Periodizitäten der Eingabesongs mittels Hashing effizient auffindbar abspeichert, sodass der Abgleich mit einer Tonaufnahme sehr schnell und korrekt abläuft \vgl{wang}. Zudem werden hierfür aus den \ac{STFT}-Ergebnissen auch nicht alle Frequenzen verwendet, sondern nur möglichst signifikante davon. Bisher wird das mittels der lokalen Maxima der Amplituden erreicht.
 
     Für die Anwendung auf Proteine werden statt des musikalischen Spektrums die numerischen Vektoren der Aminosäuresequenzen verwendet. Nun gibt es in \protfin\ zwei verschiedene Anwendungsansätze:
     \begin{enumerate}
@@ -26,7 +26,14 @@
         \item \textbf{Family-Matching:}\ \ Als Eingabe erfolgt eine Proteinfamilie. Die Periodizitäten, in denen sich alle Mitglieder dieser Familie ähneln, die also spezifisch für die Familie sind, werden verwendet, um Proteine zu finden, die auch in die Familie passen.
     \end{enumerate}
     \phantomsection\label{kurze_sequenzen}
-    Um den Algorithmus, der von einer SHAZAM-Implementierung in Python ausgeht \autocite{blog}, für beide Ansätze auf die vergleichsweise kurzen Sequenzen von wenigen 100 Elementen abzustimmen (ein solcher Vektor für eine Sekunde Musik hätte etwa 40.000 Elemente), wurde in vorangegangenen Experimenten versucht, die Fenstergröße und die Überlappung zwischen diesen Fenstern bei der STFT zu optimieren, beziehungsweise auch die Anzahl gewählter Frequenzen, deren Amplituden auf Periodizität hindeuten. Hierbei zeigte sich allerdings eine schlechte Performanz hinsichtlich Speicher- und Laufzeitkomplexität. Die Wahl der Frequenzen der STFT Fenster und deren Abspeicherung müssen folglich noch verbessert werden.
+
+    \begin{wrapfigure}{r}{0.5\textwidth}
+        \includegraphics[width=0.5\textwidth]{plot_previous.sp.png}
+        \caption[Bisherige Ergebnisse von \protfin]{Bisherige Ergebnisse von \protfin: Überblick der Ergebnisse für die Hydrophobizität mit Verwendung verschiedener Parameter, die die \acs{STFT} betreffen (siehe \autoref{sub:durchführung}). Die Farbe stellt dar, wie viele Eingabeproteine eindeutig identifiziert wurden, die blaue Linie die Größe der Eingabedaten.}
+        \label{fig:prev_results}
+    \end{wrapfigure}
+
+    Um den Algorithmus, der von einer SHAZAM-Implementierung in Python ausgeht \autocite{blog}, für beide Ansätze auf die vergleichsweise kurzen Sequenzen von wenigen 100 Elementen abzustimmen (ein solcher Vektor für eine Sekunde Musik hätte etwa 40.000 Elemente), wurde in vorangegangenen Experimenten versucht, die Fenstergröße und die Überlappung zwischen diesen Fenstern bei der \ac{STFT} zu optimieren, beziehungsweise auch die Anzahl gewählter Frequenzen, deren Amplituden auf Periodizität hindeuten. Hierbei zeigte sich bisher allerdings eine schlechte Performanz hinsichtlich Speicher- und Laufzeitkomplexität. Die Ergebnisse dazu sind in der rechten \autoref{fig:prev_results} dargestellt. Die Wahl der Frequenzen der \ac{STFT} Fenster und deren Abspeicherung müssen folglich noch verbessert werden.
 
     Hierzu werden in dieser Arbeit mehrere Experimente angegangen.
     \begin{enumerate}

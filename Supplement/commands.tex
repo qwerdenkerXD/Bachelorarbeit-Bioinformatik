@@ -29,6 +29,17 @@
 
 \newcommand{\centerIt}[1]{\hspace*{\fill} #1 \hspace*{\fill}}  % used in table headers
 
+\newcommand{\PhantomSubSub}[2][]{
+            \phantomsection
+            \ifx{\relax#1\relax}{}
+            \else
+            \label{#1}%
+            \fi
+            % \ifx\relax#1\relax \label{#1} \fi
+            % \addtocounter{subsubsection}{1}
+            % \addcontentsline{toc}{subsubsection}{\protect\numberline{\thesubsubsection} #1}}
+            \addcontentsline{toc}{subsubsection}{#2}}
+
 \newcounter{experiment}
 % \renewcommand{\theexperiment}{\arabic{experiment}}
 \newenvironment{experiment}[1]{\addtocounter{experiment}{1}\subsection{\acl{Exp.} \theexperiment: #1}\addtocounter{experiment}{-1}\refstepcounter{experiment}}{}

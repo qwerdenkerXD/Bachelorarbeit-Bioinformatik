@@ -15,22 +15,30 @@ plt.rcParams.update({'font.size': 15, "font.family": "serif", "figure.dpi": 200}
 def main():
     plot_method()
     plot_scoring()
+
+    def add_db_sizes(summary_file, db_sizes_file) -> pd.DataFrame:
+        summary = pd.read_csv(summary_file)
+        summary.rename(columns=dict(n_Peaks="N_Peaks"), inplace=True)
+        dbstats = pd.read_csv(db_sizes_file)
+        dbstats["DB_Size"] = dbstats["DB_Size"].str.replace("M", "").astype(int)
+        dbparams = dbstats[["Winsize", "n_Peaks", "Overlap"]].apply(tuple, axis=1)
+        db_sizes = []
+        for w, n, o in summary[["Window_Size", "N_Peaks", "Overlap"]].apply(tuple, axis=1):
+            db_sizes.append(dbstats["DB_Size"][dbparams == (w, n, o)].iloc[0])
+        summary["DB_Size_MB"] = db_sizes
+        return summary
+
     summary = pd.read_csv("../material/Target-Zone/summary.csv")
     summary["Target_Zone"] = 2 ** summary["Target_Zone"]
     plot_single_prot_matching(summary, "plot_target_zone")
     plot_single_prot_matching(pd.read_csv("../material/Selection-Method/summary.csv"), "plot_selection_method")
+    summary = add_db_sizes("../material/previous/summary.csv", "../material/previous/runtimes_createdb.csv")
+    plot_single_prot_matching(summary, "plot_previous")
 
     summary = pd.read_csv("../material/Filter Hashes/summary.csv")
     plot_single_prot_matching(summary[~summary["Hash_Use_First_Appearance"]], "plot_filter_hashes")
 
-    summary = pd.read_csv("../material/UniRef90 Sampling/summary.csv")
-    dbstats = pd.read_csv("../material/UniRef90 Sampling/runtimes_createdb.csv")
-    dbstats["DB_Size"] = dbstats["DB_Size"].str.replace("M", "").astype(int)
-    dbparams = dbstats[["Winsize", "n_Peaks", "Overlap"]].apply(tuple, axis=1)
-    db_sizes = []
-    for w, n, o in summary[["Window_Size", "N_Peaks", "Overlap"]].apply(tuple, axis=1):
-        db_sizes.append(dbstats["DB_Size"][dbparams == (w, n, o)].iloc[0])
-    summary["DB_Size_MB"] = db_sizes
+    summary = add_db_sizes("../material/UniRef90 Sampling/summary.csv", "../material/UniRef90 Sampling/runtimes_createdb.csv")
     plot_single_prot_matching(summary, "plot_uniref90")
 
     plot_family_matching(pd.read_csv("../material/Selection-Method/summary_match_family.csv"), "plot_selection_method")
@@ -40,11 +48,32 @@ def main():
 
     plot_aa_vec_example("EVKEFDGQGCFC")
 
+    plot_mean_frequencies()
+
+
+def plot_mean_frequencies():
+    plt.clf()
+    fig, ax = plt.subplots(1, 1, figsize=(14, 4))
+
+    file_data = pd.read_csv("../material/mean_frequencies.csv")
+
+    xticklabels = []
+    for pos, (params, data) in enumerate(file_data.groupby(["Significance", "N_Peaks"])):
+        boxplot(ax, pos * 10, data, "Mean_Frequencies_Per_Window", True)
+        xticklabels.append("\n".join(str(p) for p in params))
+
+    ax.set_xticklabels(xticklabels)
+
+    ax.set_title("Mittlere Frequenzzahl pro Fenster einer Sequenz")
+    ax.set_xlabel("Signifikanz\n$n\_peaks$")
+    ax.set_ylabel("Frequenzen pro Fenster")
+
+    plt.savefig("../results/plot_mean_frequencies.png", bbox_inches="tight")
+
 
 def plot_aa_vec_example(seq):
     plt.clf()
     fig, ax = plt.subplots(1, 1, figsize=(14, 3))
-    set_spine_color(ax)
 
     kf = pd.read_csv("../material/Amino_Acid_Kidera_Factors.csv")
     aa_vec = [kf[aa].iloc[3] for aa in seq]
@@ -63,6 +92,9 @@ def plot_aa_vec_example(seq):
     ax.set_xticklabels(seq)
 
     disable_spines(ax)
+    ax.spines["bottom"].set_visible(False)
+    ax.tick_params("x", bottom=False)
+    ax.axhline(0, linewidth=.5, color="black")
 
     plt.savefig("../results/aa_vec.png", bbox_inches='tight')
 
@@ -139,12 +171,12 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
     plt.savefig("../results/%s.sp.png" % out_file, bbox_inches='tight')
 
 
-def boxplot(ax, position, data, y_col):
+def boxplot(ax, position, data, y_col, showfliers=False):
     box = ax.boxplot([data[y_col]], positions=[position],
                      widths=BOXWIDTH,
                      **{i: dict(linewidth=3) for i in ["boxprops", "whiskerprops", "capprops"]},
                      medianprops=dict(linewidth=2),
-                     showfliers=False
+                     showfliers=showfliers
                      )["boxes"]
     return box[0]
 
