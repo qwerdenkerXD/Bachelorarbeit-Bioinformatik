@@ -219,7 +219,7 @@
                             \EndFor
                         \end{algorithmic}
                     \end{algorithm}
-                \end{minipage}
+                \end{minipage}\hfill\\\hfill\\
 
                 Um den Score zu bestimmen, also die Ähnlichkeit der Constellation-Map der Eingabe mit denen der \ac{TP}, werden pro Eingabe-Hash die Differenzen zwischen dessen Position mit den Positionen der trainierten Hashes gebildet und global pro Protein gezählt. Diese Differenzen repräsentieren den Abstand/Offset der Kante in der Eingabe-Map zur Kante der jeweiligen \ac{TP}-Map, also wie weit die Eingabe-Map verschoben wäre, sollte es sich bei dem \ac{TP} um das Original handeln. Auf diese Weise sammeln sich pro \ac{TP} mehrere solcher potentiellen Abstände, wobei der Abstand, der am häufigsten aufgetreten ist, offensichtlich die meiste Übereinstimmung in den Kanten zeigt. Diese Tatsache qualifiziert diese Maximalanzahl als geeigneten Score (S1) für ein Match.
 
@@ -241,7 +241,7 @@
                 \end{equation}
                 Dieser Index nimmt einen Wert von 0 an, wenn beide Mengen disjunkt sind, und nähert sich der 1 je größer die Schnittmenge ist. Im Fall des Vergleichs zweier Constellation-Maps, also zwei Hash-Mengen, wird hier bewertet, wie viele Kanten sich die beiden Maps positionsunabhängig teilen. Durch diese Unabhängigkeit reicht der JSI alleine nicht als Score aus, sodass nur in Kombination/Multiplikation mit dem S1 ein robuster Score entsteht, da beide zusammen ihre Schwächen aufheben. Der \ac{JSI} in \autoref{fig:scoring} beträgt $\frac{4}{14} \approx 0.286$, da die Schnittmenge beider Hashmengen hier gleichzeitig den S1-Score bilden und die restlichen Hashes disjunkt zueinander sind. Der S1 wäre nur noch 3, wenn eine der markierten Kanten an einer anderen Position wäre, wobei der \ac{JSI} davon unberührt bliebe.
 
-            \item \PhantomSubSub{Family-Matching}
+            \item \PhantomSubSub[fam.matching]{Family-Matching}
                 \textbf{Family-Matching:}\ \ Eingabe ist eine \ac{CSV}-Tabelle mit der Zuordnung von Protein-ID und -familie. Die für das Matching verwendeten Hashes sind hier diejenigen, die sich alle Mitglieder einer Suchfamilie teilen. Die Idee dahinter ist, dass diese Hashes spezifisch für diese Familie, beziehungsweise deren Funktion ist. Als Bewertungsmaß wird dabei die Anzahl Hashes des Treffers, die mit den Familienhashes übereinstimmen. Der Vorteil dieses Ansatzes ist, dass durch die Reduktion der betrachteten Hashes die Laufzeit verringert wird.
 
                 Für die Ausgabe werden diese Treffer zusammengefasst. Dazu gibt es zwei Kriterien, den F-Score und die Schärfe (Sharpness), die nach folgender Berechnung ermittelt werden:

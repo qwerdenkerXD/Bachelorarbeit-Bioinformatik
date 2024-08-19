@@ -20,7 +20,7 @@
             scores\_fp &= \{\emph{S1}(f) \cdot JSI(f) \mid f \in FP\}\\
             dist\_nicht\_familie &= \frac{\texttt{max}(scores\_trp) - \texttt{max}(scores\_fp)}{\texttt{max}(scores\_trp)}\\
             dist\_familie &= \frac{\texttt{max}(scores\_trp) - \texttt{mean}(scores\_trp \setminus \{\texttt{max}(scores\_trp)\})}{\texttt{max}(scores\_trp)}\\
-            \emph{Schärfe} &= dist\_nicht\_familie * (1 - dist\_familie)
+            \emph{Schärfe} &= dist\_nicht\_familie \cdot (1 - dist\_familie)
         \end{split}
     \end{equation}
 
@@ -28,7 +28,21 @@
 
     \subsection*{Ausblick} % (fold)
         \label{sub:ausblick}
-        \dots
-    
+        Den bisherigen Ergebnissen nach, hat \protfin\ das Potential, eines Tages seinem Zweck gerecht zu werden. Aktuell ist dies zwar noch nicht der Fall, aber die Experimente zeigen, dass es Wege gibt, dem Ziel nahezukommen. Auch möglich ist, dass der aktuelle Ansatz einfach nicht funktioniert, weil die aus den Sequenzen erhaltenen Vektoren zu kurz sind oder ein anderer noch ungesehener Fall vorliegt, der die Verwandtschaftserkennung verhindert.
+
+        Andere Ansätze gibt es auf jeden Fall:
+        \begin{enumerate}
+            \item Der für mich anfangs intuitivste Weg war, die Sequenzen in echte Musik zu übersetzen, sodass SHAZAM direkt darauf angewandt werden könnte. Im Anhang (siehe \autoref{sec:anhang}) ist eine Beispielmusikdatei, die aus einer Aminosäuresequenz generiert wurde, wobei jede Aminosäure in einem Akkord aus \acp{KF} entsprach. Problem hierbei war ebenso die Datenbankgröße, da Musik komplexer als Text ist. Dennoch ist der Kern der Idee vielleicht trotzdem richtig, nur die Umsetzung noch nicht ideal.
+            \item Ebenso möglich wäre, anstelle ein echtes musikalisches Spektrum zu erstellen, stattdessen den aktuell erstellten Vektor, wie in \autoref{fig:nomalization} dargestellt, durch lineare Interpolation um weitere Punkte zu ergänzen. Mit anderen Worten, die Punkte in \autoref{fig:nomalization} werden verbunden. Auf diese Weise hätte die \ac{STFT} wesentlich mehr Spielraum.
+            \item Auch denkbar wäre, mehrere \acp{KF} in den Vektor einzubeziehen. Allerdings hätte das möglicherweise den Nebeneffekt, dass beim Matching nicht \ac{KF}-spezifisch gesucht wird. Denn \protfin\ hätte theoretisch die Option, funktionelle Ähnlichkeit in Bezug auf spezielle physikalische Eigenschaften zu identifizieren.
+        \end{enumerate}
+        
+        Es gibt allerdings auch noch Wege, wie die aktuelle Implementierung weiterentwickelt werden kann. So ist zum Beispiel das Family-Matching ausbaufähig. Neben den oben genannten Änderungen, könnte ebenfalls die Bewertungsmethode der Treffer erweitert werden. Aktuell ist deren Score lediglich die Anzahl Hashes, die mit den Hashes der Familie übereinstimmen, wie auf \autopageref{fam.matching} erläutert. Im Gegensatz zum Single-Protein-Matching wird hier die Position der Hashes also nicht einbezogen, was die Wahrscheinlichkeit auf Übereinstimmung deutlich erhöht. Der Grund ist, dass nicht klar ist, ob die Hashes auch innerhalb der Familie dieselben Positionen haben. Das müsste experimentell ermittelt werden. Ansonsten wäre es auch ein möglicher Ansatz, alle Positionen P zu speichern und bei der Identifizierung eines Treffers einen Hash nur als Übereinstimmung zu bewerten, wenn seine Position Teil von P ist.
+
+        Das Speichern aller Positionen wäre ebenso eine Option für das Single-Protein-Matching. Zwar würde das ermitteln des S1-Score, siehe \autoref{fig:scoring}, deutlich aufwändiger sein, aber möglicherweise wäre dieser Score dann gar nicht mehr notwendig. Wenn bei der Generierung der Hashes in \autoref{alg:hashing} nicht die Position, sondern die Anzahl der Positionen gespeichert werden würde, wäre die Summe der Werte der Hashes die Gesamtzahl an Hashes des Proteins. Werden die Hashes zweier Proteine verglichen, so bildet die Summe der absoluten Differenzen der geteilten Hashes die Übereinstimmung beider Proteine. Das Verhältnis beider wäre konzeptuell dem \ac{JSI} ähnlich, nur dass die beiden Mengen Duplikate enthalten dürfen. Das Problem beim \ac{JSI} ist, dass er positionsunspezifisch ist. Dieser alternative Score ist ihm zwar ähnlich, aber da hier wirklich alle Hashes einfließen, da die Kombination aller Hashes die Positionen in abstrakter Form beinhaltet, da die Hashes prinzipiell Kanten in einem fast vollständigen Graph sind, wie in \autoref{fig:hashing} dargestellt. Hat man eine Kante, folgt zwangsläufig daraus, dass von den Enden ebenfalls weitere Kanten ausgehen, und mit der Vorgabe, nach welchem System die Punkte verbunden werden, entsteht trotzdem der ursprüngliche Graph. Demzufolge wäre es auch möglich, mit diesem Score die \ac{TZ} wieder zu erweitern, um einen vollständigeren Graph aus der Constellation-Map zu erstellen, wobei die Performanz des Scorings davon unberührt bliebe.
+
+        Ein Problem, das bei den kleinen \ac{FG} angegangen werden muss, ist die Hashbildung. Bei einer maximalen \ac{FG} von 50 gibt es 26 Frequenzen, die als Minimum oder Maximum ausgewählt werden können. Bei einer \ac{TZ} von 8 sind das ${(26 \cdot 2)}^{2} \cdot 8 = 21632$ mögliche Kombinationen, die ein Hash annehmen kann. Davon ausgehend, dass \protfin\ mal mit Millionen von Proteinen verwendet werden soll, ist das viel zu unspezifisch. Sollte es bei diesen kleinen Fenstern bleiben, muss der Informationsgehalt eines Hashes deutlich erhöht werden. Hierfür könnten zum Beispiel statt Paaren von Punkten der Constellation-Map größere n-Tupel kombiniert werden, wobei hier die Gefahr zu hoher Spezifität besteht. Das oben beschriebene Einbeziehen aller Hash-Positionen wäre vielleicht auch eine Option für das Problem oder die Erweiterung der Vektoren.
+
+        Es gibt also noch viel Entwicklungsbedarf und -möglichkeiten für \protfin. Die Identifikation einzelner Proteine funktioniert sehr gut, das Erkennen von funktioneller Ähnlichkeit hingegen weniger, wobei die Speicher-Komplexität des Trainings auch deutlich verringert werden muss. Doch wird ein Weg gefunden, das zu erreichen, so bietet der Algorithmus eine ganz neue Alternative für die sequenzbasierte Verwandtschaftsanalyse.
     % subsection ausblick (end)
 % section diskussion (end)
