@@ -74,7 +74,7 @@ Reproduzierbarkeit:
             Rscript ../methods/plot_sequence_lengths.R protein.fa ../results/seq_lens.png
         Abbildungen 1, 2, 4, 5, 7, 9, 10, 11, 12, 13, 14, 15:
             cd Supplement/methods
-            python3 ../methods/plot_sequence_lengths.R protein.fa ../results/seq_lens.png
+            python3 plots.py
         Abbildung 6:
             # Dies ist eine einfache LaTeX-Tabelle.
             # Um den LaTeX Code dazu zu sehen, in:
@@ -198,4 +198,5 @@ Dateiformate: (Bei Verständnisfragen von Spalten, siehe Bachelorarbeit.pdf)
                 https://github.com/qwerdenkerXD/prot-fin-dev/blob/134663504c1e21fe579b798cd41c016ad81e1284/experiments/aa_as_chords/methods/protfin.py
 
     FASTA:
-        Supplement/material/protein.fa
+        Supplement/material/protein.fa:
+            Die Trainingsproteine für prot-fin, also für die Datenbankerstellung und die Auswahl der Suchsequenzen.
