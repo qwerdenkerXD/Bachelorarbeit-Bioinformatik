@@ -33,20 +33,20 @@
             \label{fig:frequencies_uniref}
         \end{figure}
 
-        Beim UniRef90 Sampling wurden die Amplituden-Grenzwerte für vier verschiedene Signifikanzniveaus ermittelt. \autoref{fig:frequencies_uniref} stellt den folglichen Einfluss auf die Frequenzselektion bezüglich Häufigkeit dar, exemplarisch für Hydrophobizität bei \ac{FG} 30 mit Überlappung von 15 und $n\_peaks = alle$. Exemplarisch weil primäres Ziel die Ermittlung der Grenzwerte je Signifikanzniveau war, \autoref{exp:target_zone} wird mit derselben Selektionsmethode für alle Parameter durchgeführt.
+        Beim UniRef90 Sampling wurden die Amplituden-Grenzwerte für vier verschiedene Signifikanzniveaus ermittelt. \MyRef{fig:frequencies_uniref} stellt den folglichen Einfluss auf die Frequenzselektion bezüglich Häufigkeit dar, exemplarisch für Hydrophobizität bei \ac{FG} 30 mit Überlappung von 15 und $n\_peaks = alle$. Exemplarisch weil primäres Ziel die Ermittlung der Grenzwerte je Signifikanzniveau war, \MyRef{exp:target_zone} wird mit derselben Selektionsmethode für alle Parameter durchgeführt.
 
-        In \autoref{fig:frequencies_normal} ist die Auswahl vor dem Sampling dargestellt. Die Häufigkeiten der Frequenzen liegen im Mittel etwa bei 360000 und sind in allen Frequenzen vertreten, was bei circa 40000 Proteinen bedeutet, dass in einer Sequenz jede Frequenz etwa 9-mal vorkommt. Frequenz 0.1, also eine Periode von jeder 10. Aminosäure, scheint zudem besonders häufig gewählt zu werden. Bis auf \autoref{fig:frequencies_0.1} scheint das auch für die Frequenzselektion zu gelten, die auf dem Sampling basiert.
+        In \MyRef{fig:frequencies_normal} ist die Auswahl vor dem Sampling dargestellt. Die Häufigkeiten der Frequenzen liegen im Mittel etwa bei 360000 und sind in allen Frequenzen vertreten, was bei circa 40000 Proteinen bedeutet, dass in einer Sequenz jede Frequenz etwa 9-mal vorkommt. Frequenz 0.1, also eine Periode von jeder 10. Aminosäure, scheint zudem besonders häufig gewählt zu werden. Bis auf \MyRef{fig:frequencies_0.1} scheint das auch für die Frequenzselektion zu gelten, die auf dem Sampling basiert.
 
         Die Häufigkeiten werden mit schrumpfendem $\alpha$ deutlich kleiner. So kommt eine Frequenz mit 5\% Grenze nur etwa in jeder zweiten Sequenz vor, bei 0.1\% in jeder 20., und bei noch strengeren Grenzen seltener als in jeder 200. Sequenz.
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\textwidth]{plot_uniref90.sp.png}
-            \caption[Single-Protein-Matching \Exp{exp:uniref90}]{Matching-Ergebnisse für $\alpha=5\%$. Die Boxen bilden die Datenbankgrößen für die verschiedenen Parameter aus \autoref{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\autoref{equ:f_score} \autopageref{equ:f_score}), sofern sie einen positiven Wert hat. Die farbige Fläche über und unter den Boxen stellt die Anzahl dar, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert wurden (hier ``Unique Self Matches''). Die blaue horizontale Linie kennzeichnet die Größe der Eingabedaten.}
+            \caption[Single-Protein-Matching \Exp{exp:uniref90}]{Matching-Ergebnisse für $\alpha=5\%$. Die Boxen bilden die Datenbankgrößen für die verschiedenen Parameter aus \MyRef{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\MyRef{equ:f_score}), sofern sie einen positiven Wert hat. Die farbige Fläche über und unter den Boxen stellt die Anzahl dar, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert wurden (hier ``Unique Self Matches''). Die blaue horizontale Linie kennzeichnet die Größe der Eingabedaten.}
             \label{fig:uniref90.sp}
         \end{figure}
 
-        Ursprünglich war \autoref{exp:uniref90} so konzipiert, dass nur das ein 5\%-alpha ermittelt wird. Da die Datenbanken aber weiterhin zu groß sind, wie in \autoref{fig:uniref90.sp}, \autoref{sub:filter_results} und \autoref{sub:target_results} zu sehen, wurde es um die strengeren Signifikanzniveaus erweitert. Die Identifizierung ist ab \ac{FG} 20 sehr gut und hat eine nahezu 100\%-ige Schärfe. \ac{FG} 10 ist zwar unter der Eingabegröße, scheitert aber bei der Identifikation und wurde daher nicht für alle Experimente betrachtet. 
+        Ursprünglich war \MyRef{exp:uniref90} so konzipiert, dass nur das ein 5\%-alpha ermittelt wird. Da die Datenbanken aber weiterhin zu groß sind, wie in \MyRef{fig:uniref90.sp}, \MyRef{sub:filter_results} und \MyRef{sub:target_results} zu sehen, wurde es um die strengeren Signifikanzniveaus erweitert. Die Identifizierung ist ab \ac{FG} 20 sehr gut und hat eine nahezu 100\%-ige Schärfe. \ac{FG} 10 ist zwar unter der Eingabegröße, scheitert aber bei der Identifikation und wurde daher nicht für alle Experimente betrachtet. 
     
     % subsection uniref90_sampling (end)
     \subsection{Filter Hashes} % (fold)
@@ -56,35 +56,35 @@
         \begin{figure}[H]
             \centering
             \includegraphics[width=\textwidth]{plot_filter_hashes.sp.png}
-            \caption[Single-Protein-Matching \Exp{exp:filter_hashes}]{Die Boxen bilden die Datenbankgrößen für die verschiedenen Parameter aus \autoref{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\autoref{equ:f_score} \autopageref{equ:f_score}), sofern sie einen positiven Wert hat. Die farbige Fläche über und unter den Boxen stellt die Anzahl dar, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert wurden (hier ``Unique Self Matches''). Die blaue horizontale Linie kennzeichnet die Größe der Eingabedaten.}
+            \caption[Single-Protein-Matching \Exp{exp:filter_hashes}]{Die Boxen bilden die Datenbankgrößen für die verschiedenen Parameter aus \MyRef{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\MyRef{equ:f_score}), sofern sie einen positiven Wert hat. Die farbige Fläche über und unter den Boxen stellt die Anzahl dar, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert wurden (hier ``Unique Self Matches''). Die blaue horizontale Linie kennzeichnet die Größe der Eingabedaten.}
             \label{fig:filter_hashes.sp}
         \end{figure}
 
-        Aufgrund zu langer Laufzeit wurde das Single-Protein-Matching vorzeitig abbgebrochen, sodass die Daten der pro \ac{FG} jeweils letzten Quantile nicht vollständig sind. \autoref{fig:filter_hashes.sp} zeigt für die Suchproteine für alle getesteten Parameter eine hohe Identifikationsrate mit hoher Schärfe. Mit sinkendem Quantil schrumpft auch die Datenbankgröße scheinbar linear. Dennoch ist keine davon unter dem Limit der Eingabe.
+        Aufgrund zu langer Laufzeit wurde das Single-Protein-Matching vorzeitig abbgebrochen, sodass die Daten der pro \ac{FG} jeweils letzten Quantile nicht vollständig sind. \MyRef{fig:filter_hashes.sp} zeigt für die Suchproteine für alle getesteten Parameter eine hohe Identifikationsrate mit hoher Schärfe. Mit sinkendem Quantil schrumpft auch die Datenbankgröße scheinbar linear. Dennoch ist keine davon unter dem Limit der Eingabe.
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\textwidth]{plot_filter_hashes.fam.png}
-            \caption[Family-Matching \Exp{exp:filter_hashes}]{Die Boxen bilden die F-Scores für die verschiedenen Parameter aus \autoref{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\autoref{equ:f_score} \autopageref{equ:f_score}), sofern sie einen positiven Wert hat.}
+            \caption[Family-Matching \Exp{exp:filter_hashes}]{Die Boxen bilden die F-Scores für die verschiedenen Parameter aus \MyRef{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\MyRef{equ:f_score}), sofern sie einen positiven Wert hat.}
             \label{fig:filter_hashes.fam}
         \end{figure}
 
-        Der Family-Matching-Ansatz in \autoref{fig:filter_hashes.fam} hat eine geringe Schärfe von unter 0.5, wobei sich für die getesteten Parameter zeigt, dass kleinere Quantile einen höheren F-Score haben, der aber deutlich unter 1 liegt.
+        Der Family-Matching-Ansatz in \MyRef{fig:filter_hashes.fam} hat eine geringe Schärfe von unter 0.5, wobei sich für die getesteten Parameter zeigt, dass kleinere Quantile einen höheren F-Score haben, der aber deutlich unter 1 liegt.
 
     \subsection{Target-Zone} % (fold)
         \label{sub:target_results}
         \begin{figure}[H]
             \centering
             \includegraphics[width=\textwidth]{plot_target_zone.sp.png}
-            \caption[Single-Protein-Matching \Exp{exp:target_zone}]{Die Boxen bilden die Datenbankgrößen für die verschiedenen Parameter aus \autoref{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\autoref{equ:f_score} \autopageref{equ:f_score}), sofern sie einen positiven Wert hat. Die farbige Fläche über und unter den Boxen stellt die Anzahl dar, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert wurden (hier ``Unique Self Matches''). Die blaue horizontale Linie kennzeichnet die Größe der Eingabedaten.}
+            \caption[Single-Protein-Matching \Exp{exp:target_zone}]{Die Boxen bilden die Datenbankgrößen für die verschiedenen Parameter aus \MyRef{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\MyRef{equ:f_score}), sofern sie einen positiven Wert hat. Die farbige Fläche über und unter den Boxen stellt die Anzahl dar, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert wurden (hier ``Unique Self Matches''). Die blaue horizontale Linie kennzeichnet die Größe der Eingabedaten.}
             \label{fig:target_zone.sp}
         \end{figure}
 
-        Für das Testen verschiedener \aclp{TZ} ist in \autoref{fig:target_zone.sp} eine Tendenz zu exponentiellem Wachstum der Datenbankgröße bei ansteigender \ac{TZ} erkennbar. Wie beim Sampling in \autoref{fig:uniref90.sp} scheitert die Identifikation bei \ac{FG} 10, im Gegensatz zu den anderen Größen, welche auch eine hohe Schärfe haben.
+        Für das Testen verschiedener \aclp{TZ} ist in \MyRef{fig:target_zone.sp} eine Tendenz zu exponentiellem Wachstum der Datenbankgröße bei ansteigender \ac{TZ} erkennbar. Wie beim Sampling in \MyRef{fig:uniref90.sp} scheitert die Identifikation bei \ac{FG} 10, im Gegensatz zu den anderen Größen, welche auch eine hohe Schärfe haben.
 
     \subsection{Selection-Method} % (fold)
         \label{sub:selection_results}
-        Da das \autoref{exp:target_zone} in \autoref{sub:target_results} aufgrund zu hoher Laufzeit vorzeitig abgebrochen wurde, wurde in dem hiesigen Experiment die Datenbankerstellung bei zu hoher Größe abgebrochen. Lediglich der Selektionsansatz, der die Maxima der absoluten Grenzwertabweichungen auswählt, hat zur Fertigstellung geführt, sodass das Matching nur für diese Datenbanken erfolgen konnte. Vor dem eigentlichen Experiment wurde für mehrere $\alpha$-Werte die mittlere Anzahl Frequenzen pro Fenster bestimmt, mit dem Kiterium, eine Frequenz pro Fenster nicht übermäßig zu überschreiten.
+        Da das \MyRef{exp:target_zone} in \MyRef{sub:target_results} aufgrund zu hoher Laufzeit vorzeitig abgebrochen wurde, wurde in dem hiesigen Experiment die Datenbankerstellung bei zu hoher Größe abgebrochen. Lediglich der Selektionsansatz, der die Maxima der absoluten Grenzwertabweichungen auswählt, hat zur Fertigstellung geführt, sodass das Matching nur für diese Datenbanken erfolgen konnte. Vor dem eigentlichen Experiment wurde für mehrere $\alpha$-Werte die mittlere Anzahl Frequenzen pro Fenster bestimmt, mit dem Kiterium, eine Frequenz pro Fenster nicht übermäßig zu überschreiten.
 
         \begin{figure}[H]
              \includegraphics[width=\textwidth]{plot_mean_frequencies.png}
@@ -92,23 +92,23 @@
              \label{fig:mean_frequencies}
         \end{figure} 
 
-        In \autoref{fig:mean_frequencies} wird deutlich, dass die Verringerung der Signifikanz die Anzahl der gewählten Frequenzen reduziert. Es wurden die beiden kleinsten $\alpha$-Werte für den weiteren Experimentverlauf gewählt, weil die Streuung der anderen für eine Anzahl größer 1 zu gering schien.
+        In \MyRef{fig:mean_frequencies} wird deutlich, dass die Verringerung der Signifikanz die Anzahl der gewählten Frequenzen reduziert. Es wurden die beiden kleinsten $\alpha$-Werte für den weiteren Experimentverlauf gewählt, weil die Streuung der anderen für eine Anzahl größer 1 zu gering schien.
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\textwidth]{plot_selection_method.sp.png}
-            \caption[Single-Protein-Matching \Exp{exp:selection_method}]{Die Boxen bilden die Datenbankgrößen für die verschiedenen Parameter aus \autoref{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\autoref{equ:f_score} \autopageref{equ:f_score}), sofern sie einen positiven Wert hat. Die farbige Fläche über und unter den Boxen stellt die Anzahl dar, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert wurden (hier ``Unique Self Matches''). Die blaue horizontale Linie kennzeichnet die Größe der Eingabedaten.}
+            \caption[Single-Protein-Matching \Exp{exp:selection_method}]{Die Boxen bilden die Datenbankgrößen für die verschiedenen Parameter aus \MyRef{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\MyRef{equ:f_score}), sofern sie einen positiven Wert hat. Die farbige Fläche über und unter den Boxen stellt die Anzahl dar, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert wurden (hier ``Unique Self Matches''). Die blaue horizontale Linie kennzeichnet die Größe der Eingabedaten.}
             \label{fig:selection_method.sp}
         \end{figure}
 
-        In \autoref{fig:selection_method.sp} zeigt sich für das Single-Protein-Matching, dass die Identifikation bei den getesteten Parametern mit hoher Schärfe erfolgreich funktionierte. Beim Wechsel von $k=2$ zu $k=3$ ist zudem ein kleiner Sprung nach unten zu erkennen.
+        In \MyRef{fig:selection_method.sp} zeigt sich für das Single-Protein-Matching, dass die Identifikation bei den getesteten Parametern mit hoher Schärfe erfolgreich funktionierte. Beim Wechsel von $k=2$ zu $k=3$ ist zudem ein kleiner Sprung nach unten zu erkennen.
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\textwidth]{plot_selection_method.fam.png}
-            \caption[Family-Matching \Exp{exp:selection_method}]{Die Boxen bilden die F-Scores für die verschiedenen Parameter aus \autoref{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\autoref{equ:f_score} \autopageref{equ:f_score}), sofern sie einen positiven Wert hat.}
+            \caption[Family-Matching \Exp{exp:selection_method}]{Die Boxen bilden die F-Scores für die verschiedenen Parameter aus \MyRef{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\MyRef{equ:f_score}), sofern sie einen positiven Wert hat.}
             \label{fig:selection_method.fam}
         \end{figure}
 
-        Beim Family-Matching scheinen die höheren \acp{FG} ab 40 besser abzuschneiden. Für $k=2$ sinkt der F-Score ein wenig. Die Schärfe liegt wie bei \autoref{fig:filter_hashes.fam} überall unter $0.5$.
+        Beim Family-Matching scheinen die höheren \acp{FG} ab 40 besser abzuschneiden. Für $k=2$ sinkt der F-Score ein wenig. Die Schärfe liegt wie bei \MyRef{fig:filter_hashes.fam} überall unter $0.5$.
 % section ergebnisse (end)

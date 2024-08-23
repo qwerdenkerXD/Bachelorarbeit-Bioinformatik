@@ -12,6 +12,9 @@
 \renewcommand{\algorithmicensure}{\textbf{Nachbedingung}}
 \newcommand{\linenoautorefname}{Line}
 
+\newcommand{\MyRef}[1]{\autoref{#1} (\autopageref{#1})}
+\newcommand{\Anhang}[1]{\texttt{#1} im Anhang (\autopageref{sec:anhang})}
+
 % referencing algorithm lines, the custom counter is necessary when referencing same line numbers of different algorithms
 \newcounter{algline}[algorithm]
 % \renewcommand{\thealgline}{Zeile \arabic{algline}}
@@ -63,8 +66,6 @@
     \end{tikzpicture}%
     \ttfamily\ \ #2%
 }
-
-\newcommand{\Anhang}{Anhang (\autopageref{sec:anhang})}
 
 \newcommand{\myRequire}[1]{
     \Require \begin{varwidth}[t]{\textwidth}
