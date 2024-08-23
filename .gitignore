@@ -1,4 +1,6 @@
 **/.*
+**/protein.fa
+!CD/**
 !.gitignore
 
 Supplement/*.*

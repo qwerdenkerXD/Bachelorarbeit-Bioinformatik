@@ -1,0 +1,156 @@
+\newcommand{\Author}{Franz-Eric Sill}
+\newcommand{\Date}{26.08.2024}
+\newcommand{\Title}{Proteinerkennung auf Basis physikalischer Eigenschaften mittels Fourier-Transformation}
+\newcommand{\Subtitle}{}
+\newcommand{\Purpose}{Bachelorarbeit}
+\newcommand{\protfin}{prot-fin}
+\newcommand{\vgl}[1]{\cite[vgl.][]{#1}}
+\floatname{algorithm}{Algorithmus}
+\newcommand{\algorithmautorefname}{Algorithmus}
+\renewcommand{\listalgorithmname}{Algorithmenverzeichnis}
+\renewcommand{\algorithmicrequire}{\textbf{Vorbedingung}}
+\renewcommand{\algorithmicensure}{\textbf{Nachbedingung}}
+\newcommand{\linenoautorefname}{Line}
+
+% referencing algorithm lines, the custom counter is necessary when referencing same line numbers of different algorithms
+\newcounter{algline}[algorithm]
+% \renewcommand{\thealgline}{Zeile \arabic{algline}}
+\newcommand{\alglineautorefname}{Zeile}
+\newcommand{\AlgLineLabel}[1]{
+  \setcounter{algline}{\value{ALG@line}}  % set to current line
+  \addtocounter{algline}{-1}  % Adjust line number
+  \refstepcounter{algline}%  add reference for hyperref
+  \label{#1}
+}
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[2]{\algorithmicforeach\ #1\ \textbf{in}\ #2\ \algorithmicdo}
+\newcommand{\RefAlgLine}[2]{\autoref{#1:#2} von \autoref{#1}}
+\newcommand{\sminus}{\scalebox{0.8}[1]{-}}
+
+\newcommand{\centerIt}[1]{\hspace*{\fill} #1 \hspace*{\fill}}  % used in table headers
+
+\newcommand{\PhantomSubSub}[2][]{
+            \phantomsection
+            \ifx{\relax#1\relax}{}
+            \else
+            \label{#1}%
+            \fi
+            % \ifx\relax#1\relax \label{#1} \fi
+            % \addtocounter{subsubsection}{1}
+            % \addcontentsline{toc}{subsubsection}{\protect\numberline{\thesubsubsection} #1}}
+            \addcontentsline{toc}{subsubsection}{#2}}
+
+\newcounter{experiment}
+% \renewcommand{\theexperiment}{\arabic{experiment}}
+\newenvironment{experiment}[1]{\addtocounter{experiment}{1}\subsection{\acl{Exp.} \theexperiment: #1}\addtocounter{experiment}{-1}\refstepcounter{experiment}}{}
+\newcommand{\experimentautorefname}{\ac{Exp.}}
+\newcommand{\Exp}[1]{Exp.~\ref*{#1}}  % for referencing in captions that appear before introduction like the lof
+% \newcommand{\Exp}[1]{\hyperref[#1]{\acs{Exp.}~\ref{#1}}}  % with links inside lof to the experiments
+
+\definecolor{folderbg}{RGB}{124,166,198}
+\definecolor{folderborder}{RGB}{110,144,169}
+
+\def\Size{4pt}
+
+\newcommand\myfolder[2][fblue]{%
+    \begin{tikzpicture}[overlay]
+        \begin{scope}
+            \filldraw[draw=folderborder,top color=folderbg!50,bottom color=folderbg]
+              (-1.05*\Size,0.2\Size+8pt) rectangle ++(.75*\Size,-0.2\Size-2pt);  
+            \filldraw[draw=folderborder,top color=folderbg!50,bottom color=folderbg]
+              (-1.15*\Size,-\Size+3pt) rectangle (1.15*\Size,\Size+3pt);
+        \end{scope}  
+    \end{tikzpicture}%
+    \ttfamily\ \ #2%
+}
+
+\newcommand{\Anhang}{Anhang (\autopageref{sec:anhang})}
+
+\newcommand{\myRequire}[1]{
+    \Require \begin{varwidth}[t]{\textwidth}
+        #1
+    \end{varwidth}
+}
+
+\newcommand{\myEnsure}[1]{
+    \Ensure \begin{varwidth}[t]{\textwidth}
+        #1
+    \end{varwidth}
+}
+
+\newenvironment{dirtree}[1]{
+    \begin{forest}
+        for tree={
+          grow'=0,
+          child anchor=west,
+          parent anchor=south,
+          anchor=west,
+          calign=first,
+          inner xsep=7pt,
+          inner ysep=1pt,
+          font=\ttfamily,
+          edge path={
+            \noexpand\path [draw, \forestoption{edge}]
+            (!u.south west) +(7.5pt,0) |- (.child anchor)\forestoption{edge label};
+          },
+          before typesetting nodes={
+            if n=1
+              {insert before={[,phantom]}}
+              {}
+          },
+          fit=band,
+          before computing xy={l=25pt},
+        }
+        #1
+    \end{forest}
+}
+
+\renewcommand{\maketitle}{
+  \begin{titlepage}
+      \begin{center}
+          \begin{figure}
+              \centering
+              \includegraphics[width=1\textwidth]{unilogo.png}
+          \end{figure}
+          \Large
+          Technische Hochschule Bingen\\
+          Fachbereich 2 $-$ Technik, Informatik und Wirtschaft\\
+          Angewandte Bioinformatik (B.\ Sc.)\\
+          \vspace{0.5cm} 
+          
+          \Huge
+          \textbf{\Title}\\\hspace*{\fill}\par
+          \Large
+          \textbf{\Subtitle}
+          \vfill
+          
+          \LARGE
+          \Purpose\\
+          abgegeben am: \Date\\
+          von: \Author\\
+          \vspace{0.5cm}
+          Betreuer: Prof.\ Dr.\ Asis Hallab\\
+      \end{center}
+
+  \end{titlepage}
+}
+
+\newcommand{\declaration}[2]{
+    \leavevmode%
+    \vfill\noindent
+    \begin{center}
+      % Declaration Title
+      \textbf{#1}
+    \end{center}
+    #2
+
+    \vspace*{4em}\noindent
+    \hfill%
+    \begin{tabular}[t]{c}
+      \rule{10em}{0.4pt}\\ Unterschrift
+    \end{tabular}%
+    \hfill%
+    \begin{tabular}[t]{c}
+      \rule{10em}{0.4pt}\\ Ort und Datum
+    \end{tabular}%
+    \hfill\strut\par}

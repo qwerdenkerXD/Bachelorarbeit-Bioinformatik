@@ -1,0 +1,216 @@
+@Article{alphafold1,
+  author="Jumper, John
+  and Evans, Richard
+  and Pritzel, Alexander
+  and Green, Tim
+  and Figurnov, Michael
+  and Ronneberger, Olaf
+  and Tunyasuvunakool, Kathryn
+  and Bates, Russ
+  and {\v{Z}}{\'i}dek, Augustin
+  and Potapenko, Anna
+  and Bridgland, Alex
+  and Meyer, Clemens
+  and Kohl, Simon A. A.
+  and Ballard, Andrew J.
+  and Cowie, Andrew
+  and Romera-Paredes, Bernardino
+  and Nikolov, Stanislav
+  and Jain, Rishub
+  and Adler, Jonas
+  and Back, Trevor
+  and Petersen, Stig
+  and Reiman, David
+  and Clancy, Ellen
+  and Zielinski, Michal
+  and Steinegger, Martin
+  and Pacholska, Michalina
+  and Berghammer, Tamas
+  and Bodenstein, Sebastian
+  and Silver, David
+  and Vinyals, Oriol
+  and Senior, Andrew W.
+  and Kavukcuoglu, Koray
+  and Kohli, Pushmeet
+  and Hassabis, Demis",
+  title="Highly accurate protein structure prediction with AlphaFold",
+  journal="Nature",
+  year="2021",
+  month="Aug",
+  day="01",
+  volume="596",
+  number="7873",
+  pages="583--589",
+  abstract="Proteins are essential to life, and understanding their structure can facilitate a mechanistic understanding of their function. Through an enormous experimental effort1--4, the structures of around 100,000 unique proteins have been determined5, but this represents a small fraction of the billions of known protein sequences6,7. Structural coverage is bottlenecked by the months to years of painstaking effort required to determine a single protein structure. Accurate computational approaches are needed to address this gap and to enable large-scale structural bioinformatics. Predicting the three-dimensional structure that a protein will adopt based solely on its amino acid sequence---the structure prediction component of the `protein folding problem'8---has been an important open research problem for more than 50 years9. Despite recent progress10--14, existing methods fall far short of atomic accuracy, especially when no homologous structure is available. Here we provide the first computational method that can regularly predict protein structures with atomic accuracy even in cases in which no similar structure is known. We validated an entirely redesigned version of our neural network-based model, AlphaFold, in the challenging 14th Critical Assessment of protein Structure Prediction (CASP14)15, demonstrating accuracy competitive with experimental structures in a majority of cases and greatly outperforming other methods. Underpinning the latest version of AlphaFold is a novel machine learning approach that incorporates physical and biological knowledge about protein structure, leveraging multi-sequence alignments, into the design of the deep learning algorithm.",
+  issn="1476-4687",
+  doi="10.1038/s41586-021-03819-2",
+  url="https://doi.org/10.1038/s41586-021-03819-2"
+}
+@article{alphafold,
+    author = {Varadi, Mihaly and Bertoni, Damian and Magana, Paulyna and Paramval, Urmila and Pidruchna, Ivanna and Radhakrishnan, Malarvizhi and Tsenkov, Maxim and Nair, Sreenath and Mirdita, Milot and Yeo, Jingi and Kovalevskiy, Oleg and Tunyasuvunakool, Kathryn and Laydon, Agata and Žídek, Augustin and Tomlinson, Hamish and Hariharan, Dhavanthi and Abrahamson, Josh and Green, Tim and Jumper, John and Birney, Ewan and Steinegger, Martin and Hassabis, Demis and Velankar, Sameer},
+    title = "{AlphaFold Protein Structure Database in 2024: providing structure coverage for over 214 million protein sequences}",
+    journal = {Nucleic Acids Research},
+    volume = {52},
+    number = {D1},
+    pages = {D368-D375},
+    year = {2023},
+    month = {11},
+    abstract = "{The AlphaFold Database Protein Structure Database (AlphaFold DB, https://alphafold.ebi.ac.uk) has significantly impacted structural biology by amassing over 214 million predicted protein structures, expanding from the initial 300k structures released in 2021. Enabled by the groundbreaking AlphaFold2 artificial intelligence (AI) system, the predictions archived in AlphaFold DB have been integrated into primary data resources such as PDB, UniProt, Ensembl, InterPro and MobiDB. Our manuscript details subsequent enhancements in data archiving, covering successive releases encompassing model organisms, global health proteomes, Swiss-Prot integration, and a host of curated protein datasets. We detail the data access mechanisms of AlphaFold DB, from direct file access via FTP to advanced queries using Google Cloud Public Datasets and the programmatic access endpoints of the database. We also discuss the improvements and services added since its initial release, including enhancements to the Predicted Aligned Error viewer, customisation options for the 3D viewer, and improvements in the search engine of AlphaFold DB.The AlphaFold Protein Structure Database (AlphaFold DB) is a massive digital library of predicted protein structures, with over 214 million entries, marking a 500-times expansion in size since its initial release in 2021. The structures are predicted using Google DeepMind's AlphaFold 2 artificial intelligence (AI) system. Our new report highlights the latest updates we have made to this database. We have added more data on specific organisms and proteins related to global health and expanded to cover almost the complete UniProt database, a primary data resource of protein sequences. We also made it easier for our users to access the data by directly downloading files or using advanced cloud-based tools. Finally, we have also improved how users view and search through these protein structures, making the user experience smoother and more informative. In short, AlphaFold DB has been growing rapidly and has become more user-friendly and robust to support the broader scientific community.}",
+    issn = {0305-1048},
+    doi = {10.1093/nar/gkad1011},
+    url = {https://doi.org/10.1093/nar/gkad1011},
+    eprint = {https://academic.oup.com/nar/article-pdf/52/D1/D368/55039845/gkad1011.pdf},
+}
+@article{similarity,
+  title={Similar amino acid sequences: chance or common ancestry?},
+  author={Doolittle, Russell F},
+  journal={Science},
+  volume={214},
+  number={4517},
+  pages={149--159},
+  year={1981},
+  publisher={American Association for the Advancement of Science},
+  % https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=7da6d9a784fd4825571efc967e68072abdf54593
+}
+@article{blast,
+  author = {Pearson, William R.},
+  title = {An Introduction to Sequence Similarity (“Homology”) Searching},
+  journal = {Current Protocols in Bioinformatics},
+  volume = {42},
+  % number = {1},
+  pages = {3.1.1-3.1.8},
+  keywords = {sequence similarity, homology, orthlogy, paralogy, sequence alignment, multiple alignment, sequence evolution},
+  doi = {https://doi.org/10.1002/0471250953.bi0301s42},
+  url = {https://currentprotocols.onlinelibrary.wiley.com/doi/abs/10.1002/0471250953.bi0301s42},
+  eprint = {https://currentprotocols.onlinelibrary.wiley.com/doi/pdf/10.1002/0471250953.bi0301s42},
+  abstract = {Abstract Sequence similarity searching, typically with BLAST, is the most widely used and most reliable strategy for characterizing newly determined sequences. Sequence similarity searches can identify “homologous” proteins or genes by detecting excess similarity— statistically significant similarity that reflects common ancestry. This unit provides an overview of the inference of homology from significant similarity, and introduces other units in this chapter that provide more details on effective strategies for identifying homologs. Curr. Protoc. Bioinform. 42:3.1.1-3.1.8. © 2013 by John Wiley \& Sons, Inc.},
+  year = {2013}
+}
+@article{uniprot,
+    author = {The UniProt Consortium },
+    title = "{UniProt: the universal protein knowledgebase in 2021}",
+    journal = {Nucleic Acids Research},
+    volume = {49},
+    number = {D1},
+    pages = {D480-D489},
+    year = {2020},
+    month = {11},
+    abstract = "{The aim of the UniProt Knowledgebase is to provide users with a comprehensive, high-quality and freely accessible set of protein sequences annotated with functional information. In this article, we describe significant updates that we have made over the last two years to the resource. The number of sequences in UniProtKB has risen to approximately 190 million, despite continued work to reduce sequence redundancy at the proteome level. We have adopted new methods of assessing proteome completeness and quality. We continue to extract detailed annotations from the literature to add to reviewed entries and supplement these in unreviewed entries with annotations provided by automated systems such as the newly implemented Association-Rule-Based Annotator (ARBA). We have developed a credit-based publication submission interface to allow the community to contribute publications and annotations to UniProt entries. We describe how UniProtKB responded to the COVID-19 pandemic through expert curation of relevant entries that were rapidly made available to the research community through a dedicated portal. UniProt resources are available under a CC-BY (4.0) license via the web at https://www.uniprot.org/.}",
+    issn = {0305-1048},
+    doi = {10.1093/nar/gkaa1100},
+    url = {https://doi.org/10.1093/nar/gkaa1100},
+    eprint = {https://academic.oup.com/nar/article-pdf/49/D1/D480/35364103/gkaa1100.pdf},
+}
+@article{uniref,
+    author = {Suzek, Baris E. and Wang, Yuqi and Huang, Hongzhan and McGarvey, Peter B. and Wu, Cathy H. and the UniProt Consortium},
+    title = {UniRef clusters: a comprehensive and scalable alternative for improving sequence similarity searches},
+    journal = {Bioinformatics},
+    volume = {31},
+    number = {6},
+    pages = {926-932},
+    year = {2014},
+    month = {11},
+    % abstract = "Motivation: UniRef databases provide full-scale clustering of UniProtKB sequences and are utilized for a broad range of applications, particularly similarity-based functional annotation. Non-redundancy and intra-cluster homogeneity in UniRef were recently improved by adding a sequence length overlap threshold. Our hypothesis is that these improvements would enhance the speed and sensitivity of similarity searches and improve the consistency of annotation within clusters.Results: Intra-cluster molecular function consistency was examined by analysis of Gene Ontology terms. Results show that UniRef clusters bring together proteins of identical molecular function in more than 97\\% of the clusters, implying that clusters are useful for annotation and can also be used to detect annotation inconsistencies. To examine coverage in similarity results, BLASTP searches against UniRef50 followed by expansion of the hit lists with cluster members demonstrated advantages compared with searches against UniProtKB sequences; the searches are concise (∼7 times shorter hit list before expansion), faster (∼6 times) and more sensitive in detection of remote similarities (\\&gt;96\\% recall at e-value \\&lt;0.0001). Our results support the use of UniRef clusters as a comprehensive and scalable alternative to native sequence databases for similarity searches and reinforces its reliability for use in functional annotation.Availability and implementation: Web access and file download from UniProt website at http://www.uniprot.org/uniref and ftp://ftp.uniprot.org/pub/databases/uniprot/uniref. BLAST searches against UniRef are available at http://www.uniprot.org/blast/Contact: huang@dbi.udel.edu",
+    issn = {1367-4803},
+    doi = {10.1093/bioinformatics/btu739},
+    url = {https://doi.org/10.1093/bioinformatics/btu739},
+    eprint = {https://academic.oup.com/bioinformatics/article-pdf/31/6/926/49011550/bioinformatics\_31\_6\_926.pdf}
+}
+@article{mapman,
+  title = {MapMan4: A Refined Protein Classification and Annotation Framework Applicable to Multi-Omics Data Analysis},
+  journal = {Molecular Plant},
+  volume = {12},
+  number = {6},
+  pages = {879-892},
+  year = {2019},
+  note = {Plant Systems Biology},
+  issn = {1674-2052},
+  doi = {https://doi.org/10.1016/j.molp.2019.01.003},
+  url = {https://www.sciencedirect.com/science/article/pii/S1674205219300085},
+  author = {Rainer Schwacke and Gabriel Y. Ponce-Soto and Kirsten Krause and Anthony M. Bolger and Borjana Arsova and Asis Hallab and Kristina Gruden and Mark Stitt and Marie E. Bolger and Björn Usadel},
+  keywords = {Plant genomes, Functional annotation, MapMan, Mercator, Transcriptomes},
+  abstract = {Genome sequences from over 200 plant species have already been published, with this number expected to increase rapidly due to advances in sequencing technologies. Once a new genome has been assembled and the genes identified, the functional annotation of their putative translational products, proteins, using ontologies is of key importance as it places the sequencing data in a biological context. Furthermore, to keep pace with rapid production of genome sequences, this functional annotation process must be fully automated. Here we present a redesigned and significantly enhanced MapMan4 framework, together with a revised version of the associated online Mercator annotation tool. Compared with the original MapMan, the new ontology has been expanded almost threefold and enforces stricter assignment rules. This framework was then incorporated into Mercator4, which has been upgraded to reflect current knowledge across the land plant group, providing protein annotations for all embryophytes with a comparably high quality. The annotation process has been optimized to allow a plant genome to be annotated in a matter of minutes. The output results continue to be compatible with the established MapMan desktop application.}
+}
+@article{scipy,
+  author  = {Virtanen, Pauli and Gommers, Ralf and Oliphant, Travis E. and
+            Haberland, Matt and Reddy, Tyler and Cournapeau, David and
+            Burovski, Evgeni and Peterson, Pearu and Weckesser, Warren and
+            Bright, Jonathan and {van der Walt}, St{\'e}fan J. and
+            Brett, Matthew and Wilson, Joshua and Millman, K. Jarrod and
+            Mayorov, Nikolay and Nelson, Andrew R. J. and Jones, Eric and
+            Kern, Robert and Larson, Eric and Carey, C J and
+            Polat, {\.I}lhan and Feng, Yu and Moore, Eric W. and
+            {VanderPlas}, Jake and Laxalde, Denis and Perktold, Josef and
+            Cimrman, Robert and Henriksen, Ian and Quintero, E. A. and
+            Harris, Charles R. and Archibald, Anne M. and
+            Ribeiro, Ant{\^o}nio H. and Pedregosa, Fabian and
+            {van Mulbregt}, Paul and {SciPy 1.0 Contributors}},
+  title   = {{{SciPy} 1.0: Fundamental Algorithms for Scientific
+            Computing in Python}},
+  journal = {Nature Methods},
+  year    = {2020},
+  volume  = {17},
+  pages   = {261--272},
+  adsurl  = {https://rdcu.be/b08Wh},
+  doi     = {10.1038/s41592-019-0686-2},
+}
+@article{peptides,
+  author = {Osorio, Daniel and Rondón-Villarreal, Paola and Torres, Rodrigo},
+  title = {Peptides: A Package for Data Mining of Antimicrobial Peptides},
+  journal = {The R Journal},
+  year = {2015},
+  note = {https://rjournal.github.io/},
+  volume = {7},
+  issue = {1},
+  issn = {2073-4859},
+  pages = {4-14}
+}
+@article{kidera,
+  author="Kidera, Akinori
+  and Konishi, Yasuo
+  and Oka, Masahito
+  and Ooi, Tatsuo
+  and Scheraga, Harold A.",
+  title="Statistical analysis of the physical properties of the 20 naturally occurring amino acids",
+  journal="Journal of Protein Chemistry",
+  year="1985",
+  month="Feb",
+  day="01",
+  volume="4",
+  number="1",
+  pages="23--55",
+  abstract="In order to describe the conformational and other physical properties of the 20 naturally occurring amino acid residues with a minimum number of parameters, several multivariate statistical analyses were applied to 188 of their physical properties and ten orthogonal properties (factors) were obtained for the 20 amino acids without losing the information contained in the original physical properties. The analysis consisted of three main steps. First, 72 of the physical properties were eliminated from further consideration because they did not pass statistical tests that they follow a normal distribution. Second, the remaining 116 physical properties of the amino acids were classified by a cluster analysis to eliminate duplications of highly correlated physical properties. This led to nine clusters, each of which was characterized by an average characteristic property, namely bulk, two hydrophobicity indices for free amino acids, one hydrophobicity index for amino acid residues in a protein, two types of $\beta$-structure preference, $\alpha$-helix preference, and two types of bend-structure preference. The physical properties within a given cluster were highly correlated with each other, but the correlation between clusters was low. Third, a factor analysis was applied to the nine average classified properties and 16 additional physical properties to obtain a small number of orthogonal properties (ten factors). Four of these factors arise from the nine characteristic properties, and the remaining six factors were obtained from the 16 physical properties not included in the nine characteristic properties. Finally, most of the 188 physical properties could be expressed as a sum of these ten orthogonal factors, with appropriate weighting factors. Since these factors contain information relating almost all properties of all 20 amino acids, it is possible to estimate the numerical values of a property for one or two amino acids for which experimental data for this property are not available. For example, the estimated values for the Zimm-Bragg parameters at 20{\textdegree}C are 0.66 and 0.92 for proline and cysteine, respectively, computed from the first four factors.",
+  issn="1573-4943",
+  doi="10.1007/BF01025492",
+  url="https://doi.org/10.1007/BF01025492"
+}
+@inproceedings{wang,
+  author = {Wang, Avery},
+  year = {2003},
+  month = {01},
+  pages = {},
+  title = {An Industrial Strength Audio Search Algorithm.}
+}
+@article{mercator,
+  author = {LOHSE, MARC and NAGEL, AXEL and HERTER, THOMAS and MAY, PATRICK and SCHRODA, MICHAEL and ZRENNER, RITA and TOHGE, TAKAYUKI and FERNIE, ALISDAIR R. and STITT, MARK and USADEL, BJÖRN},
+  title = {Mercator: a fast and simple web server for genome scale functional annotation of plant sequence data},
+  journal = {Plant, Cell \& Environment},
+  volume = {37},
+  number = {5},
+  pages = {1250-1258},
+  keywords = {genome annotation, MapMan, next-generation sequencing, transcriptomics},
+  doi = {https://doi.org/10.1111/pce.12231},
+  url = {https://onlinelibrary.wiley.com/doi/abs/10.1111/pce.12231},
+  eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1111/pce.12231},
+  abstract = {Abstract Next-generation technologies generate an overwhelming amount of gene sequence data. Efficient annotation tools are required to make these data amenable to functional genomics analyses. The Mercator pipeline automatically assigns functional terms to protein or nucleotide sequences. It uses the MapMan ‘BIN’ ontology, which is tailored for functional annotation of plant ‘omics’ data. The classification procedure performs parallel sequence searches against reference databases, compiles the results and computes the most likely MapMan BINs for each query. In the current version, the pipeline relies on manually curated reference classifications originating from the three reference organisms (Arabidopsis, Chlamydomonas, rice), various other plant species that have a reviewed SwissProt annotation, and more than 2000 protein domain and family profiles at InterPro, CDD and KOG. Functional annotations predicted by Mercator achieve accuracies above 90\% when benchmarked against manual annotation. In addition to mapping files for direct use in the visualization software MapMan, Mercator provides graphical overview charts, detailed annotation information in a convenient web browser interface and a MapMan-to-GO translation table to export results as GO terms. Mercator is available free of charge via http://mapman.gabipd.org/web/guest/app/Mercator.},
+  year = {2014}
+}
+@article{blog,
+  author = {Michael Strauss},
+  title = {How Shazam Works - An explanation in Python},
+  year="2021",
+  month="Jan",
+  day="29",
+  url = {https://michaelstrauss.dev/shazam-in-python},
+  note = {Zugriff: 17.08.2024}
+}
