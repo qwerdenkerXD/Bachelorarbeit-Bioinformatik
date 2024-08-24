@@ -1,9 +1,10 @@
 **/.*
 **/protein.fa
 !CD/**
+CD/Supplement/results/*
 !.gitignore
 
-Supplement/*.*
-!Supplement/*.tex
-!Supplement/*.png
-!Supplement/*.bib
+Bachelorarbeit/*.*
+!Bachelorarbeit/*.tex
+!Bachelorarbeit/*.png
+!Bachelorarbeit/*.bib

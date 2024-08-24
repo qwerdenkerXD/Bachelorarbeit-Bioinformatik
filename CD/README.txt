@@ -1,6 +1,9 @@
 Anhang der Bachelorarbeit von Franz-Eric Sill, Abgabe am 26.08.2024, Matrikelnummer 2139315, Technische Hochschule Bingen
 
 Die Bachelorarbeit befindet sich in Bachelorarbeit.pdf
+Die Dateien auf dieser CD sind auch auf GitHub verfügbar, bei: https://github.com/qwerdenkerXD/Bachelorarbeit-Bioinformatik/tree/master/CD
+Der Stand des prot-fin-Projekts bei Abgabe der Bachelorarbeit ist auf meinem GitHub-Profil zu finden: https://github.com/qwerdenkerXD/prot-fin-dev
+Weiterentwickelt wird das Projekt in: https://github.com/usadellab/prot-fin
 
 Ordnerstruktur:
     Siehe Bachelorarbeit.pdf in Abschnitt "Anhang"
@@ -70,9 +73,10 @@ Reproduzierbarkeit:
             dplyr: 1.1.4
 
         Abbildung 3:
-            cd Supplement/methods
+            cd Supplement/material
+            mkdir ../results
             Rscript ../methods/plot_sequence_lengths.R protein.fa ../results/seq_lens.png
-        Abbildungen 1, 2, 4, 5, 7, 9, 10, 11, 12, 13, 14, 15:
+        Abbildungen 1, 2, 4, 5, 7, 9, 10, 11, 12, 13, 14a, 14b, 14c, 15:
             cd Supplement/methods
             python3 plots.py
         Abbildung 6:
@@ -82,6 +86,7 @@ Reproduzierbarkeit:
             # nach "\label{fig:hash}" suchen
         Abbildung 8a, 8b, 8c, 8d:
             cddir=$(pwd)
+            mkdir Supplement/results
             git clone https://github.com/qwerdenkerXD/prot-fin-dev.git
             cd prot-fin-dev
             git checkout v0.4-exp-uniref_sampling

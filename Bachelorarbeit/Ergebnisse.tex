@@ -87,16 +87,22 @@
         Da das \MyRef{exp:target_zone} in \MyRef{sub:target_results} aufgrund zu hoher Laufzeit vorzeitig abgebrochen wurde, wurde in dem hiesigen Experiment die Datenbankerstellung bei zu hoher Größe abgebrochen. Lediglich der Selektionsansatz, der die Maxima der absoluten Grenzwertabweichungen auswählt, hat zur Fertigstellung geführt, sodass das Matching nur für diese Datenbanken erfolgen konnte. Vor dem eigentlichen Experiment wurde für mehrere $\alpha$-Werte die mittlere Anzahl Frequenzen pro Fenster bestimmt, mit dem Kiterium, eine Frequenz pro Fenster nicht übermäßig zu überschreiten.
 
         \begin{figure}[H]
-             \includegraphics[width=\textwidth]{plot_mean_frequencies.png}
-             \caption{Mittlere Frequenzzahl pro Fenster einer Sequenz}
-             \label{fig:mean_frequencies}
-        \end{figure} 
-
-        In \MyRef{fig:mean_frequencies} wird deutlich, dass die Verringerung der Signifikanz die Anzahl der gewählten Frequenzen reduziert. Es wurden die beiden kleinsten $\alpha$-Werte für den weiteren Experimentverlauf gewählt, weil die Streuung der anderen für eine Anzahl größer 1 zu gering schien.
-
-        \begin{figure}[H]
             \centering
-            \includegraphics[width=\textwidth]{plot_selection_method.sp.png}
+            \begin{subfigure}{\textwidth}
+                \includegraphics[width=\textwidth]{plot_selection_method_none.sp.png}
+                \caption{Ansatz 1: Wahl nur mit Grenzwerten siehe \MyRef{exp:selection_method}}
+                \label{fig:selection_method.none.sp}
+            \end{subfigure}\\
+            \begin{subfigure}{\textwidth}
+                \includegraphics[width=\textwidth]{plot_selection_method_deviation.sp.png}
+                \caption{Ansatz 2: Wahl der Ausreißer der lokalen Maxima/Minima siehe \MyRef{exp:selection_method}}
+                \label{fig:selection_method.absolute.sp}
+            \end{subfigure}\\
+            \begin{subfigure}{\textwidth}
+                \includegraphics[width=\textwidth]{plot_selection_method_deviation.sp.png}
+                \caption{Ansatz 3: Wahl nach Grenzwertabweichung siehe \MyRef{exp:selection_method}}
+                \label{fig:selection_method.deviation.sp}
+            \end{subfigure}
             \caption[Single-Protein-Matching \Exp{exp:selection_method}]{Die Boxen bilden die Datenbankgrößen für die verschiedenen Parameter aus \MyRef{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\MyRef{equ:f_score}), sofern sie einen positiven Wert hat. Die farbige Fläche über und unter den Boxen stellt die Anzahl dar, wie viele der Suchproteine als Treffer mit alleinigem besten Score identifiziert wurden (hier ``Unique Self Matches''). Die blaue horizontale Linie kennzeichnet die Größe der Eingabedaten.}
             \label{fig:selection_method.sp}
         \end{figure}
@@ -105,7 +111,21 @@
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=\textwidth]{plot_selection_method.fam.png}
+            \begin{subfigure}{\textwidth}
+                \includegraphics[width=\textwidth]{plot_selection_method_none.fam.png}
+                \caption{Ansatz 1: Wahl nur mit Grenzwerten siehe \MyRef{exp:selection_method}}
+                \label{fig:selection_method.none.fam}
+            \end{subfigure}\\
+            \begin{subfigure}{\textwidth}
+                \includegraphics[width=\textwidth]{plot_selection_method_deviation.fam.png}
+                \caption{Ansatz 2: Wahl der Ausreißer der lokalen Maxima/Minima siehe \MyRef{exp:selection_method}}
+                \label{fig:selection_method.absolute.fam}
+            \end{subfigure}\\
+            \begin{subfigure}{\textwidth}
+                \includegraphics[width=\textwidth]{plot_selection_method_deviation.fam.png}
+                \caption{Ansatz 3: Wahl nach Grenzwertabweichung siehe \MyRef{exp:selection_method}}
+                \label{fig:selection_method.deviation.fam}
+            \end{subfigure}
             \caption[Family-Matching \Exp{exp:selection_method}]{Die Boxen bilden die F-Scores für die verschiedenen Parameter aus \MyRef{tab:parameter} ab. Die blaue Füllung repräsentiert die Schärfe (\MyRef{equ:f_score}), sofern sie einen positiven Wert hat.}
             \label{fig:selection_method.fam}
         \end{figure}

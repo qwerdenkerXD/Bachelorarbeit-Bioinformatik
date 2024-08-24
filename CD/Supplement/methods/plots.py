@@ -2,14 +2,17 @@ from matplotlib.colors import LinearSegmentedColormap as Cmap, Normalize
 from matplotlib.cm import ScalarMappable
 from matplotlib import pyplot as plt
 from scipy.signal import find_peaks
-from os.path import getsize
+from os.path import getsize, exists
+from os import makedirs
 import pandas as pd
 import numpy as np
 
 np.random.seed(0)
 TH_COLOR = "#005B99"
 BOXWIDTH = 5
-RESULTS = "../../../Bachelorarbeit/results"
+RESULTS = "../results"
+if not exists(RESULTS):
+    makedirs(RESULTS)
 plt.rcParams.update({'font.size': 15, "font.family": "serif", "figure.dpi": 200})
 
 
@@ -32,7 +35,11 @@ def main():
     summary = pd.read_csv("../material/Target-Zone/summary.csv")
     summary["Target_Zone"] = 2 ** summary["Target_Zone"]
     plot_single_prot_matching(summary, "plot_target_zone")
-    plot_single_prot_matching(pd.read_csv("../material/Selection-Method/summary.csv"), "plot_selection_method")
+
+    summary = pd.read_csv("../material/Selection-Method/summary.csv")
+    for method in ["deviation", "absolute", "none"]:
+        plot_single_prot_matching(summary[summary["Selection_Method"] == method], "plot_selection_method_" + method)
+
     summary = add_db_sizes("../material/previous/summary.csv", "../material/previous/runtimes_createdb.csv")
     plot_single_prot_matching(summary, "plot_previous")
 
@@ -42,38 +49,18 @@ def main():
     summary = add_db_sizes("../material/UniRef90 Sampling/summary.csv", "../material/UniRef90 Sampling/runtimes_createdb.csv")
     plot_single_prot_matching(summary, "plot_uniref90")
 
-    plot_family_matching(pd.read_csv("../material/Selection-Method/summary_match_family.csv"), "plot_selection_method")
+    summary = pd.read_csv("../material/Selection-Method/summary_match_family.csv")
+    for method in ["deviation", "absolute", "none"]:
+        plot_family_matching(summary[summary["Selection_Method"] == method], "plot_selection_method_" + method)
 
     summary = pd.read_csv("../material/Filter Hashes/summary_match_family.csv")
     plot_family_matching(summary[~summary["Hash_Use_First_Appearance"]], "plot_filter_hashes")
 
     plot_aa_vec_example("EVKEFDGQGCFC")
 
-    plot_mean_frequencies()
-
-
-def plot_mean_frequencies():
-    plt.clf()
-    fig, ax = plt.subplots(1, 1, figsize=(14, 4))
-
-    file_data = pd.read_csv("../material/mean_frequencies.csv")
-
-    xticklabels = []
-    for pos, (params, data) in enumerate(file_data.groupby(["Significance", "N_Peaks"])):
-        boxplot(ax, pos * 10, data, "Mean_Frequencies_Per_Window", True)
-        xticklabels.append("\n".join(str(p) for p in params))
-
-    ax.set_xticklabels(xticklabels)
-
-    ax.set_title("Mittlere Frequenzzahl pro Fenster einer Sequenz")
-    ax.set_xlabel("Signifikanz\n$n\_peaks$")
-    ax.set_ylabel("Frequenzen pro Fenster")
-
-    plt.savefig("%s/plot_mean_frequencies.png" % RESULTS, bbox_inches="tight")
-
 
 def plot_aa_vec_example(seq):
-    plt.clf()
+    plt.close()
     fig, ax = plt.subplots(1, 1, figsize=(14, 3))
 
     kf = pd.read_csv("../material/Amino_Acid_Kidera_Factors.csv")
@@ -101,8 +88,9 @@ def plot_aa_vec_example(seq):
 
 
 def plot_single_prot_matching(summary: pd.DataFrame, out_file):
-    plt.clf()
+    plt.close()
     fig, ax = plt.subplots(1, 1, figsize=(14, 6))
+    fontsize = plt.rcParams['font.size']
     set_spine_color(ax)
 
     ax.axhline(getsize("../material/protein.fa") / (1024 ** 2))
@@ -137,8 +125,9 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
             *(i.replace("le", "l").replace("cance", "kanz").replace("Skip_First_K_Freqs", "k").replace("_","-") for i in special_params)
         )
 
-        plt.clf()
-        fig, ax = plt.subplots(1, 1, figsize=(14 + 6 * (len(groups) // 10), 6))
+        plt.close()
+        fontsize += len(groups) // 10 * 2
+        fig, ax = plt.subplots(1, 1, figsize=(14 + 8 * (len(groups) // 10), 6 + len(groups) // 10))
         set_spine_color(ax)
 
         ax.axhline(getsize("../material/protein.fa") / (1024 ** 2))
@@ -149,7 +138,7 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
             gradient_boxes.append((pos * 10, data["Unique_Self_Matches"].mean()))
             xticklabels.append("\n".join(str(i) for i in params))
         ax.set_xticklabels(xticklabels)
-        ax.set_xlabel("\n".join(special_params))
+        ax.set_xlabel("\n".join(special_params), fontsize=fontsize)
     else:
         for win_size, data in sorted(summary.groupby("Window_Size"), key=lambda x: x[1]["DB_Size_MB"].max(), reverse=True):
             boxes.append((data.get("Mean_Sharpness", np.zeros(1)).mean(), boxplot(ax, win_size, data, "DB_Size_MB")))
@@ -165,10 +154,10 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
     # ax.autoscale(enable=True, axis='y', tight=True)
     xmin, xmax = ax.get_xlim()
     ax.set_xlim(xmin - .25 * BOXWIDTH, xmax + .25 * BOXWIDTH)
-    plt.colorbar(ScalarMappable(cmap=cmap, norm=norm), ax=plt.gca()).set_label("Unique Self Matches", rotation=-90, va="bottom")
+    plt.colorbar(ScalarMappable(cmap=cmap, norm=norm), ax=plt.gca(), pad=0.02).set_label("Unique Self Matches", rotation=-90, va="bottom", fontsize=fontsize)
 
-    ax.set_ylabel("Datenbankgröße (MB)")
-    ax.set_title("Single-Protein-Matching Ergebnisse")
+    ax.set_ylabel("Datenbankgröße (MB)", fontsize=fontsize)
+    ax.set_title("Single-Protein-Matching Ergebnisse", fontsize=fontsize)
     plt.savefig("%s/%s.sp.png" % (RESULTS, out_file), bbox_inches='tight')
 
 
@@ -200,7 +189,7 @@ def patch_sharpness(ax, boxes):
 
 
 def plot_family_matching(summary: str, out_file):
-    plt.clf()
+    plt.close()
     fig, ax = plt.subplots(1, 1, figsize=(14, 6))
     set_spine_color(ax)
 
@@ -213,8 +202,8 @@ def plot_family_matching(summary: str, out_file):
             *(i.replace("le", "l").replace("cance", "kanz").replace("Skip_First_K_Freqs", "k") for i in special_params)
         )
 
-        plt.clf()
-        fig, ax = plt.subplots(1, 1, figsize=(14 + 5 * (len(groups) // 10), 6))
+        plt.close()
+        fig, ax = plt.subplots(1, 1, figsize=(14 + 6 * (len(groups) // 10), 6 + len(groups) // 10))
         set_spine_color(ax)
 
         xticklabels = []
@@ -241,7 +230,7 @@ def plot_family_matching(summary: str, out_file):
 
 
 def plot_scoring():
-    plt.clf()
+    plt.close()
     fig, ax = plt.subplots(1, 1, figsize=(14, 8))
 
     edges = [(a, b) for a in range(4) for b in range(4)]
@@ -301,7 +290,7 @@ def disable_spines(ax, keep="bottom"):
 
 
 def plot_method():
-    plt.clf()
+    plt.close()
 
     fig, ax = plt.subplots(1, 1, figsize=(14, 8))
     set_spine_color(ax)
