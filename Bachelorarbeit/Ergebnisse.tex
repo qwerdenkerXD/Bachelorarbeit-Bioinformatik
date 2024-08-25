@@ -56,7 +56,7 @@
     % subsection uniref90_sampling (end)
     \subsection{Filter Hashes} % (fold)
         \label{sub:filter_results}
-        In \Exp{exp:filter_hashes} war die Intention, in vielen Proteinen auftretende Hashes aus der Datenbank herauszufiltern, da Hashes, die in nahezu allen Proteinen vorkommen, bei der Identifikation eines Proteins wenig Bedeutung haben. Bei der Durchführung der Experimente wurden die seltenen Hashes nach Quantil behalten. Getestet werden sollten alle Quantile in 10\%-Schritten von 10\% bis 100\%, Letzteres als Nullprobe ohne Filtern. Aufgrund eines Eingabefehlers wurde der geplante Parameter $Quantil=0.8$ ausgelassen (\protfin\ wurde ``\texttt{.8.}'' übergeben statt ``\texttt{.8}'' und konnte den Wert nicht als \texttt{float} parsen).
+        In \MyRef{exp:filter_hashes} war die Intention, in vielen Proteinen auftretende Hashes aus der Datenbank herauszufiltern, da Hashes, die in nahezu allen Proteinen vorkommen, bei der Identifikation eines Proteins wenig Bedeutung haben. Bei der Durchführung der Experimente wurden die seltenen Hashes nach Quantil behalten. Getestet werden sollten alle Quantile in 10\%-Schritten von 10\% bis 100\%, Letzteres als Nullprobe ohne Filtern. Aufgrund eines Eingabefehlers wurde der geplante Parameter $Quantil=0.8$ ausgelassen (\protfin\ wurde ``\texttt{.8.}'' übergeben statt ``\texttt{.8}'' und konnte den Wert nicht als \texttt{float} parsen).
 
         Es wurden beide Matching-Ansätze durchgeführt (siehe ab \autopageref{sp.matching}). Die Ergebnisse für das Single-Protein-Matching sind in \MyRef{fig:filter_hashes.sp} dargestellt.
 
@@ -80,7 +80,7 @@
 
     \subsection{Target-Zone} % (fold)
         \label{sub:target_results}
-        In \Exp{exp:target_zone} wurde der Selektionsansatz aus \Exp{exp:uniref90} mit $\alpha=5\%$ verwendet, was somit eine Erweiterung der Ergebnisse aus \MyRef{sub:uniref90_results} darstellt. Wie dort wird hier lediglich der Single-Protein-Matching-Ansatz durchgeführt, allerdings mit dem Unterschied, dass die in \Exp{exp:target_zone} auf \autopageref{exp:target_zone} beschriebene \acl{TZ} eingeschränkt wird. Getestet werden die Werte 8, 16, 32, 64, da sich diese Werte auf eine ganze Zahl an Bits aufteilen lassen (3, 4, 5, 6), um in den Hash (\MyRef{fig:hash}) einzufließen.
+        In \MyRef{exp:target_zone} wurde der Selektionsansatz aus \MyRef{exp:uniref90} mit $\alpha=5\%$ verwendet, was somit eine Erweiterung der Ergebnisse aus \MyRef{sub:uniref90_results} darstellt. Wie dort wird hier lediglich der Single-Protein-Matching-Ansatz durchgeführt, allerdings mit dem Unterschied, dass die in \MyRef{exp:target_zone} beschriebene \acl{TZ} eingeschränkt wird. Getestet werden die Werte 8, 16, 32, 64, da sich diese Werte auf eine ganze Zahl an Bits aufteilen lassen (3, 4, 5, 6), um in den Hash (\MyRef{fig:hash}) einzufließen.
 
         Für das Testen verschiedener \acp{TZ} ist in \MyRef{fig:target_zone.sp} eine Tendenz zu exponentiellem Wachstum der Datenbankgröße bei ansteigender \ac{TZ} erkennbar. Je kleiner die \acl{FG} und je kleiner die \ac{TZ}, desto kleiner wird die Datenbank. Wie beim Sampling in \MyRef{fig:uniref90.sp} scheitert die Identifikation bei \ac{FG} 10 hinsichtlich der Unique Self Matches, im Gegensatz zu den anderen Größen, welche auch eine hohe Schärfe haben.
 
@@ -105,7 +105,7 @@
                 \label{fig:selection_method.none.sp}
             \end{figure}
 
-            Die Ergebnisse des Family-Matchings sind in \MyRef{fig:selection_method.none.fam} dargestellt. Wie auch beim Single-Protein-Matching in \MyRef{fig:selection_method.none.sp} ist die Performanz für die getesteten Quantile unter 5\% für $k \in \{2, 3\}$ immer die beste. Der höchste F1-Score von etwa $33\times 10^{-4}$ wird für \ac{FG} 50 mit 50\% Überlappung, $n\_peaks=3$ und $k=3$ erzielt. Die Schärfe liegt bei allen Werten unter 50\%.
+            Die Ergebnisse des Family-Matchings sind in \MyRef{fig:selection_method.none.fam} dargestellt. Wie auch beim Single-Protein-Matching in \MyRef{fig:selection_method.none.sp} ist die Performanz für die getesteten Signifikanzniveaus unter 5\% für $k \in \{2, 3\}$ immer die beste. Der höchste F1-Score von etwa $33\times 10^{-4}$ wird für \ac{FG} 50 mit 50\% Überlappung, $n\_peaks=3$ und $k=3$ erzielt. Die Schärfe liegt bei allen Werten unter 50\%.
 
             \begin{figure}[H]
                 \includegraphics[width=\textwidth]{plot_selection_method_none.fam.png}
@@ -124,9 +124,9 @@
             \label{fig:selection_method.absolute.sp}
         \end{figure}
 
-        Die Ergebnisse sind dem ersten Ansatz in \MyRef{fig:selection_method.none.sp} sehr ähnlich: Das 5\%-Quantil ist nicht vertreten, aufgrund zu großer Datenbanken. Die besten Werte erzielen $k \in \{2, 3\}$ für die restlichen Quantile, wobei das 0.1\%-Quantil für $k$ vertreten ist. Die Unterschiede liegen in einer geringeren Streuung der Datenbankgrößen und der Tatsache, dass $k=0$ Ergebnisse besitzt. Die Werte für $k \in \{0, 1\}$ sind dabei identisch, da Frequenz 0 als Randfrequenz nicht als Extremwert infrage kommt und bei $k=1$ folglich nicht entfernt werden kann. Es wurden jedes Mal alle Proteine mit einer nahezu 100\%-igen Schärfe wiedererkannt.
+        Die Ergebnisse sind dem ersten Ansatz in \MyRef{fig:selection_method.none.sp} sehr ähnlich: Nicht vertreten ist $\alpha=5\%$, aufgrund zu großer Datenbanken. Die besten Werte erzielen $k \in \{2, 3\}$ für die restlichen Signifikanzniveaus, wobei das 0.1\%-Quantil für $k$ vertreten ist. Die Unterschiede liegen in einer geringeren Streuung der Datenbankgrößen und der Tatsache, dass $k=0$ Ergebnisse besitzt. Die Werte für $k \in \{0, 1\}$ sind dabei identisch, da Frequenz 0 als Randfrequenz nicht als Extremwert infrage kommt und bei $k=1$ folglich nicht entfernt werden kann. Es wurden jedes Mal alle Proteine mit einer nahezu 100\%-igen Schärfe wiedererkannt.
 
-        Die Ergebnisse des Family-Matchings sind in der nachfolgenden \MyRef{fig:selection_method.absolute.fam} zu sehen und den Ergebnissen aus dem ersten Ansatz ebenfalls ähnlich (\MyRef{fig:selection_method.none.fam}): Die besten Werte erzielen $k \in \{2, 3\}$ für die restlichen Quantile, wobei das 0.1\%-Quantil für $k$ vertreten ist, aber generell die Streuung der F1-Scores geringer ist. Der höchste F1-Score von etwa $33\times 10^{-4}$ wird hier ebenfalls für \ac{FG} 50 mit 50\% Überlappung und $n\_peaks=3$ erzielt, allerdings mit $k=2$. Bei allen Werten wird ebenfalls eine Schärfe von unter 0.5 erreicht.
+        Die Ergebnisse des Family-Matchings sind in der nachfolgenden \MyRef{fig:selection_method.absolute.fam} zu sehen und den Ergebnissen aus dem ersten Ansatz ebenfalls ähnlich (\MyRef{fig:selection_method.none.fam}): Die besten Werte erzielen $k \in \{2, 3\}$ für die restlichen Signifikanzniveaus, wobei $\alpha=0.1\%$ für $k$ vertreten ist, aber generell die Streuung der F1-Scores geringer ist. Der höchste F1-Score von etwa $33\times 10^{-4}$ wird hier ebenfalls für \ac{FG} 50 mit 50\% Überlappung und $n\_peaks=3$ erzielt, allerdings mit $k=2$. Bei allen Werten wird ebenfalls eine Schärfe von unter 0.5 erreicht.
 
         \begin{figure}[H]
             \includegraphics[width=\textwidth]{plot_selection_method_absolute.fam.png}
@@ -147,9 +147,9 @@
             \label{fig:selection_method.deviation.sp}
         \end{figure}
 
-        Es gibt beim Single-Protein-Matching für alle $k$ und für alle getesteten Quantile Ergebnisse. Für jedes dieser Quantile unter 5\% sind die Datenbanken medial unter der Hälfte der Eingabegröße. Gleichermaßen sind die Schärfe und Anzahl eindeutig identifizierter Proteine (Unique Self Matches) allerdings sehr niedrig. Für diesen Ansatz hat lediglich das 5\%-Quantil eine hohe Schärfe mit vollständiger Identifikationsrate, wobei die Datenbanken immer zwischen etwa 35 und 100 \acs{MB} liegen. Bezüglich der Größe hat $k=3$ hierbei das beste Ergebnis.
+        Es gibt beim Single-Protein-Matching für alle $k$ und für alle getesteten $\alpha$ Ergebnisse. Für jedes dieser Signifikanzniveaus unter 5\% sind die Datenbanken medial unter der Hälfte der Eingabegröße. Gleichermaßen sind die Schärfe und Anzahl eindeutig identifizierter Proteine (Unique Self Matches) allerdings sehr niedrig. Für diesen Ansatz hat lediglich das 5\%-Quantil eine hohe Schärfe mit vollständiger Identifikationsrate, wobei die Datenbanken immer zwischen etwa 35 und 100 \acs{MB} liegen. Bezüglich der Größe hat $k=3$ hierbei das beste Ergebnis.
 
-        Die Ergebnisse des Family-Matchings mit diesem dritten Selektionsansatz sind in \MyRef{fig:selection_method.deviation.fam} abgebildet. Für das 5\%-Quantil gibt es in jedem Fall die besten Ergebnisse hinsichtlich Schärfe und F1-Score, abgesehen von Quantil 0.1\%, das bei $k=3$ mit einer Schärfe nahe null dennoch bessere F1-Scores erhält. Die Schärfe der 
+        Die Ergebnisse des Family-Matchings mit diesem dritten Selektionsansatz sind in \MyRef{fig:selection_method.deviation.fam} abgebildet. Für $\alpha=5\%$ gibt es in jedem Fall die besten Ergebnisse hinsichtlich Schärfe und F1-Score, abgesehen von $\alpha=0.1\%$, das bei $k=3$ mit einer Schärfe nahe null dennoch bessere F1-Scores erhält. Die Schärfe der 
 
         \begin{figure}[H]
             \centering
