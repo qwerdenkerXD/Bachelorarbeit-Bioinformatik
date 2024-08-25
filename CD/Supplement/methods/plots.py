@@ -18,7 +18,7 @@ plt.rcParams.update({'font.size': 15, "font.family": "serif", "figure.dpi": 200}
 
 def main():
 
-    # 
+    # plot frequency selection and constellation map with hashing
     plot_method()
 
     # plot the calculation of S1 score
