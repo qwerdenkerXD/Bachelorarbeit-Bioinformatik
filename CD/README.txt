@@ -67,40 +67,42 @@ Reproduzierbarkeit:
             tqdm: 4.66.2
             matplotlib: 3.5.2
             R: 3.6.3
+            seqinr: 4.2-36
             tibble: 3.2.1
             ggplot2: 3.5.0
             ggdist: 3.3.2
             dplyr: 1.1.4
 
+        Abbildungen 1, 2, 4, 5, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19:
+            cd Supplement/methods
+            python3 plots.py
         Abbildung 3:
             cd Supplement/material
             mkdir ../results
             Rscript ../methods/plot_sequence_lengths.R protein.fa ../results/seq_lens.png
-        Abbildungen 1, 2, 4, 5, 7, 9, 10, 11, 12, 13, 14a, 14b, 14c, 15:
-            cd Supplement/methods
-            python3 plots.py
         Abbildung 6:
             # Dies ist eine einfache LaTeX-Tabelle.
             # Um den LaTeX Code dazu zu sehen, in:
             # https://github.com/qwerdenkerXD/Bachelorarbeit-Bioinformatik/blob/master/Bachelorarbeit/Material_und_Methoden.tex
             # nach "\label{fig:hash}" suchen
-        Abbildung 8a, 8b, 8c, 8d:
+        Abbildung 8:
+            cddir=$(pwd)
+            git clone https://github.com/qwerdenkerXD/prot-fin-dev.git
+            cd prot-fin-dev
+            git checkout v0.3-exp-stft_params
+            cd experiments/recog_with_fft
+            python3 evaluation.py plot-frequencies "${cddir}/Supplement/material/protein.fa" "${cddir}/Supplement/results/8.png"  # eventuell mit -c oder --cpu die Anzahl CPU-Cores erhöhen, sofern möglich, Standard ist 1, bei der Erstellung des Plots verwendet wurden 80 CPU-Cores
+        Abbildung 9a, 9b, 9c, 9d:
             cddir=$(pwd)
             mkdir Supplement/results
             git clone https://github.com/qwerdenkerXD/prot-fin-dev.git
             cd prot-fin-dev
             git checkout v0.4-exp-uniref_sampling
             cd experiments/recog_with_fft
-            for i in 5 0.1 0.01 0.001; do;
-                python3 evaluation.py plot-frequencies "${cddir}/Supplement/material/protein.fa" "${cddir}/Supplement/results/frequencies_${i}.png"  # eventuell mit -c oder --cpu die Anzahl CPU-Cores erhöhen, sofern möglich, Standard ist 1, bei der Erstellung der 4 Plots verwendet wurden 80 CPU-Cores
+            for i in 5 0.1 0.01 0.001
+            do
+                QUANT=$i python3 evaluation.py plot-frequencies "${cddir}/Supplement/material/protein.fa" "${cddir}/Supplement/results/frequencies_${i}.png"  # eventuell mit -c oder --cpu die Anzahl CPU-Cores erhöhen, sofern möglich, Standard ist 1, bei der Erstellung der 4 Plots verwendet wurden 80 CPU-Cores
             done
-        Abbildung 8e:
-            cddir=$(pwd)
-            git clone https://github.com/qwerdenkerXD/prot-fin-dev.git
-            cd prot-fin-dev
-            git checkout v0.3-exp-stft_params
-            cd experiments/recog_with_fft
-            python3 evaluation.py plot-frequencies "${cddir}/Supplement/material/protein.fa" "${cddir}/Supplement/results/8e.png"  # eventuell mit -c oder --cpu die Anzahl CPU-Cores erhöhen, sofern möglich, Standard ist 1, bei der Erstellung des Plots verwendet wurden 80 CPU-Cores
 
 Dateiformate: (Bei Verständnisfragen von Spalten, siehe Bachelorarbeit.pdf)
     Comma Separated Values (CSV):
@@ -115,7 +117,7 @@ Dateiformate: (Bei Verständnisfragen von Spalten, siehe Bachelorarbeit.pdf)
                 Supplement/Target-Zone/runtimes_createdb.csv:
                     Target_Zone -> Größe der Target-Zone der jeweiligen Datenbank
             Zusatzinformation:
-                In Experiment 2 werden die Hashes im Matching-Modus vor der Iteration durch die Eingabesequenzen gefiltert, also nicht bei der Datenbankerstellung. Das spart Zeit, weil dasselbe Datenbank-Training nicht mehrfach durchgeführt werden muss. Deshalb gibt es für die Datenbank keinen Parameter für das Filterquantil in der CSV-Datei.
+                In Experiment 2 werden die Hashes im Matching-Modus vor der Iteration durch die Eingabesequenzen gefiltert, also nicht bei der Datenbankerstellung. Das spart Zeit, weil dasselbe Datenbank-Training nicht mehrfach durchgeführt werden muss. Deshalb gibt entspricht DB_Size hier der ungefilterten Datenbank. Die Größe der Gefilterten steht in summary.csv
         Supplement/material/*/summary.csv:
             Enthalten zusammengefasste Ergebnisse vom Single-Protein-Matching.
 

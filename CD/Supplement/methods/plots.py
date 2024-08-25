@@ -122,7 +122,7 @@ def plot_single_prot_matching(summary: pd.DataFrame, out_file):
     if len(special_params):
         groups = summary.groupby(["Window_Size", *special_params])
         special_params = ("Fenstergröße",
-            *(i.replace("le", "l").replace("cance", "kanz").replace("Skip_First_K_Freqs", "k").replace("_","-") for i in special_params)
+            *(i.replace("le", "l").replace("cance", "kanz%s" % r"%").replace("Skip_First_K_Freqs", "k").replace("_","-") for i in special_params)
         )
 
         plt.close()
@@ -199,7 +199,7 @@ def plot_family_matching(summary: str, out_file):
     if len(special_params):
         groups = summary.groupby(["Window_Size", *special_params])
         special_params = ("Fenstergröße",
-            *(i.replace("le", "l").replace("cance", "kanz").replace("Skip_First_K_Freqs", "k") for i in special_params)
+            *(i.replace("le", "l").replace("cance", "kanz%s" % r"%").replace("Skip_First_K_Freqs", "k") for i in special_params)
         )
 
         plt.close()
@@ -231,7 +231,7 @@ def plot_family_matching(summary: str, out_file):
 
 def plot_scoring():
     plt.close()
-    fig, ax = plt.subplots(1, 1, figsize=(14, 8))
+    fig, ax = plt.subplots(1, 1, figsize=(14, 7))
 
     edges = [(a, b) for a in range(4) for b in range(4)]
     edges_idx = sorted(np.random.choice(len(edges), 14, replace=False), reverse=True)
@@ -292,7 +292,7 @@ def disable_spines(ax, keep="bottom"):
 def plot_method():
     plt.close()
 
-    fig, ax = plt.subplots(1, 1, figsize=(14, 8))
+    fig, ax = plt.subplots(1, 1, figsize=(14, 6))
     set_spine_color(ax)
 
     signals = []
@@ -311,7 +311,10 @@ def plot_method():
     ax.set_title("Frequenzselektion", fontdict={"fontweight": "bold"})
     plt.savefig("%s/plot_frequency_selection.png" % RESULTS, bbox_inches='tight')
 
-    ax.clear()
+    plt.close()
+
+    fig, ax = plt.subplots(1, 1, figsize=(14, 8))
+    set_spine_color(ax)
 
     window_idx = []
     sel_peaks = []

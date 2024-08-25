@@ -4,9 +4,8 @@
 \begin{document}
 \pagenumbering{Roman}
 \maketitle
+\shipout\null
 \include{Abstract}
-\printbibliography
-\newpage
 \listoffigures
 \newpage
 \listoftables
@@ -22,6 +21,9 @@
 \include{Ergebnisse}
 \include{Diskussion}
 \include{Anhang}
+
+\printbibliography
+\newpage
 
 \pagenumbering{gobble}
 \declaration{Eigenständigkeitserklärung}{

@@ -14,6 +14,9 @@
 
 \newcommand{\MyRef}[1]{\autoref{#1} (\autopageref{#1})}
 \newcommand{\Anhang}[1]{\texttt{#1} im Anhang (\autopageref{sec:anhang})}
+\newcommand{\NumWord}[1]{%
+  \ifcase#1 null\or ein\or zwei\or drei\or vier\or fünf\or sechs\or sieben\or acht\or neun\or zehn\or elf\or zwölf\or dreizehn\or vierzehn\or fünfzehn\or sechzehn\or siebzehn\or achtzehn\or neunzehn\fi
+}
 
 % referencing algorithm lines, the custom counter is necessary when referencing same line numbers of different algorithms
 \newcounter{algline}[algorithm]
@@ -47,7 +50,7 @@
 % \renewcommand{\theexperiment}{\arabic{experiment}}
 \newenvironment{experiment}[1]{\addtocounter{experiment}{1}\subsection{\acl{Exp.} \theexperiment: #1}\addtocounter{experiment}{-1}\refstepcounter{experiment}}{}
 \newcommand{\experimentautorefname}{\ac{Exp.}}
-\newcommand{\Exp}[1]{Exp.~\ref*{#1}}  % for referencing in captions that appear before introduction like the lof
+\newcommand{\Exp}[1]{\acs{Exp.}~\ref*{#1}}  % for referencing in captions that appear before introduction like the lof
 % \newcommand{\Exp}[1]{\hyperref[#1]{\acs{Exp.}~\ref{#1}}}  % with links inside lof to the experiments
 
 \definecolor{folderbg}{RGB}{124,166,198}
