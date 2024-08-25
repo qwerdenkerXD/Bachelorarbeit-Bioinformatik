@@ -59,9 +59,9 @@
         \label{sub:ausblick}
         SHAZAM ist zweifellos sehr erfolgreich in der Erkennung von Musik mittels Tonaufnahmen, die aufgrund schlechter Mikrofonqualität sehr verzerrt sind. Durch das Aufteilen in mehrere Fenster, die einen Umfang von unter einer Sekunde haben, wird dies ermöglicht, da somit nicht relevant ist, wo die Aufnahme startet.
 
-        Wie in der Einleitung (\autopageref{sec:einleitung}) erwähnt, sind Vektoren der digitalen Musik deutlich länger als Proteinsequenzen. Ein Fenster von einer halben Sekunde hätte etwa 20000 Werte. Bei einem angenommenen Originalsong von drei Minuten Länge (180 Sekunden) und 50\% Überlappung der Fenster wären das $\frac{180 * (20000 * 2)}{0.5 * 20000}=720$ Fenster.
+        Wie in der Einleitung (\autopageref{sec:einleitung}) erwähnt, sind Vektoren der digitalen Musik deutlich länger als Proteinsequenzen. Ein Fenster von einer halben Sekunde hätte etwa 20000 Werte. Bei einem angenommenen Originalsong von drei Minuten Länge (180 Sekunden) und 50\% Überlappung der Fenster wären das $\frac{180 \cdot (20000 \cdot 2)}{0.5 \cdot 20000}=720$ Fenster.
 
-        Die Umsetzung dieses Verfahrens auf Proteine führt aktuell in \protfin\ allerdings zu Fenstern von maximal Länge 50 (siehe \MyRef{tab:parameter}), was bei einer medialen Aminosäuresequenzlänge von 300 (\MyRef{fig:sequences}) bei auch 50\% Überlappung zu lediglich $\frac{300}{0.5 * 50}=12$ Fenstern führt.
+        Die Umsetzung dieses Verfahrens auf Proteine führt aktuell in \protfin\ allerdings zu Fenstern von maximal Länge 50 (siehe \MyRef{tab:parameter}), was bei einer medialen Aminosäuresequenzlänge von 300 (\MyRef{fig:sequences}) bei auch 50\% Überlappung zu lediglich $\frac{300}{0.5 \cdot 50}=12$ Fenstern führt.
 
         Die kurzen Fenster führen zu einer geringen Anzahl überhaupt möglicher Frequenzen und die wenigen Fenster zu eingeschränkter Hashbildung. Es ist nicht auszuschließen, dass dieser aktuelle Ansatz der Übersetzung einer Aminosäuresequenz in einen numerischen Vektor nicht zielführend ist.
 
