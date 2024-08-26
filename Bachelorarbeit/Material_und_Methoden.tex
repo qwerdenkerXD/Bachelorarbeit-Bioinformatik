@@ -33,7 +33,7 @@
         \begin{algorithm}[H]
             \caption{Übersetzen einer Aminosäuresequenz in einen numerischen Vektor}\label{alg:vorbereitung}
             \PhantomSubSub{Übersetzen einer Aminosäuresequenz in einen numerischen Vektor}
-            Eingabe sind eine Aminosäuresequenz und die Nummer eines \acl{KF}s, beginnend mit 0. Dann wird die Sequenz zeichenweise in einen Vektor übersetzt, wobei erst der Wert des \ac{KF} abgerufen wird und dieser dann auf einen positiven Wert normalisiert wird.
+            Eingabe sind eine Aminosäuresequenz und die Nummer eines \acl{KF}s, beginnend mit 0. Dann wird die Sequenz zeichenweise in einen Vektor übersetzt, wobei erst der Wert des \ac{KF} abgerufen und anschließend auf einen positiven Wert normalisiert wird.
             \newcommand{\I}{\text{\textquotesingle}}
             \begin{algorithmic}[1]
 
@@ -76,7 +76,7 @@
 
         Folglich kann eine Aminosäuresequenz pro \ac{KF} in einen numerischen Vektor übersetzt werden, wobei ein höherer absoluter Wert für mehr Relevanz des \ac{KF} steht.
 
-        Um für die Fourier Transformation nur positive Werte zu verwenden, wird der Vektor anschließend dahingehend normalisiert, dass das absolute Minimum aller Werte aus \MyRef{tab:kidera} aufaddiert wird. Das absolute Minimum ist 2.33, sodass die Übersetzung der Beispielsequenz \texttt{EVKEFDGQGCFC} für die Hydrophobizität folgendermaßen geschehe:
+        Um für die Fourier Transformation nur positive Werte zu verwenden, wird der Vektor anschließend dahingehend normalisiert, dass das absolute Minimum aller Werte aus \MyRef{tab:kidera} aufaddiert wird. Dieses Minimum beträgt hier 2.33, sodass die Übersetzung der Beispielsequenz \texttt{EVKEFDGQGCFC} für die Hydrophobizität folgendermaßen geschehe:
 
         \begin{figure}[H]
             \includegraphics[width=\textwidth]{aa_vec.png}
@@ -102,15 +102,15 @@
                 \EndFor
             \end{algorithmic}
         \end{algorithm}
-        Der erhaltene Vektor aus \MyRef{alg:vorbereitung} wird strukturell analysiert. Das dafür genutzte Vorgehen basiert auf der \ac{STFT}, welche den Vektor fensterweise auf periodische Signale untersucht, wie z.B. dem wiederholten Auftreten von hydrophoben Aminosäuren im gleichen Abstand. Für die \ac{STFT} in \protfin\ Version 0.4 wird die Methode \texttt{stft} aus dem Untermodul \texttt{signal} des Python-Moduls \texttt{scipy} \autocite{scipy} Version 1.11.4 verwendet. Je Fenster werden die Frequenzen der auffälligsten Signale ausgewählt, wie in \MyRef{fig:freq_selection} dargestellt mittels der lokalen Maxima, sodass über alle Intervalle eine sogenannte Constellation-Map entsteht, welche in \MyRef{fig:hashing} im linken Teil dargestellt ist.
-        Diese Map wird dabei intern als Array repräsentiert, wobei jedes Element hierbei eine Liste darstellt, die ihrem Index entsprechend (x-Achse) die gewählten Frequenzen des jeweiligen Fensters beinhaltet (y-Achse).
+        Der erhaltene Vektor aus \MyRef{alg:vorbereitung} wird strukturell analysiert. Das dafür genutzte Vorgehen basiert auf der \ac{STFT}, welche den Vektor fensterweise auf periodische Signale untersucht, wie z.B. dem wiederholten Auftreten von hydrophoben Aminosäuren im gleichen Abstand. Für die \ac{STFT} in \protfin\ Version 0.4 wird die Methode \texttt{stft} aus dem Untermodul \texttt{signal} des Python-Moduls \texttt{scipy} \autocite{scipy} Version 1.11.4 verwendet. Je Fenster werden die Frequenzen der auffälligsten Signale ausgewählt, wie in \MyRef{fig:freq_selection} dargestellt mittels der lokalen Maxima, sodass über alle Intervalle eine sogenannte \ac{CM} entsteht, welche in \MyRef{fig:hashing} im linken Teil dargestellt ist.
+        Diese \ac{CM} wird dabei intern als Array repräsentiert, wobei jedes Element hierbei eine Liste darstellt, die ihrem Index entsprechend (x-Achse) die gewählten Frequenzen des jeweiligen Fensters beinhaltet (y-Achse).
 
         % Hashing
         % \vspace{2.25mm}
         \begin{algorithm}[H]
             \caption{Hashing}\label{alg:hashing}
             \PhantomSubSub{Hashing}
-            Eingabe ist eine \acl{CM} aus \MyRef{alg:strukturdaten}, die ID des betreffenden Proteins und die Nummer des \acl{KF}s, beginnend bei 0. Je Fenster wird jede Frequenz A paarweise mit den Frequenzen aus allen Nachfolgefenstern kombiniert. Die Frequenz A, die jeweilige Nachfolgefrequenz, der Abstand zur Nachfolgefrequenz und die Nummer des \acl{KF}s bilden den Hash. Der Abstand darf 12 Bit, also $2^{12}$ nicht überschreiten, siehe \MyRef{fig:hash}. Je Hash wird die Position des Fensters von Frequenz A in der \acl{CM} gespeichert und zusätzlich die Protein-ID, um die Verbindung von Hash und Protein zu erhalten.
+            Eingabe sind eine \acl{CM} aus \MyRef{alg:strukturdaten}, die ID des betreffenden Proteins und die Nummer des \acl{KF}s, beginnend bei 0. Je Fenster wird jede Frequenz A paarweise mit den Frequenzen aus allen Nachfolgefenstern kombiniert. Die Frequenz A, die jeweilige Nachfolgefrequenz, der Abstand zur Nachfolgefrequenz und die Nummer des \acl{KF}s bilden den Hash. Der Abstand darf 12 Bit, also $2^{12}-1$ nicht überschreiten, siehe \MyRef{fig:hash}. Je Hash wird die Position des Fensters von Frequenz A in der \acl{CM} gespeichert und zusätzlich die Protein-ID, um die Verbindung von Hash und Protein zu erhalten.
             \begin{algorithmic}[1]
                 \myRequire{
                     $constellation\_map$ aus \MyRef{alg:strukturdaten}\\
@@ -206,7 +206,7 @@
                     \item Rank $\rightarrow$ Rang
                     \item Match\_Protein\_ID $\rightarrow$ Protein-ID des Treffers
                     \item JSI $\rightarrow$ Jaccard Similarity Index (siehe \MyRef{alg:scoring})
-                    \item Score $\rightarrow$ Score (Übereinstimmung der Constellation-Map)
+                    \item Score $\rightarrow$ S1-Score (siehe \MyRef{fig:scoring})
                     \item Input\_Protein\_ID $\rightarrow$ Protein-ID der Suchsequenz
                     \item Input\_Sequence\_Length $\rightarrow$ Sequenzlänge der Suchsequenz
                     \item Input\_Found\_Hashes $\rightarrow$ Anzahl Hashes der Suchsequenz
@@ -270,7 +270,7 @@
                     \label{equ:jsi}
                     JSI(A, B)=\frac{|A \cap B|}{|A \cup B|}
                 \end{equation}
-                Dieser Index nimmt einen Wert von 0 an, wenn beide Mengen disjunkt sind, und nähert sich der 1 je größer die Schnittmenge ist. Im Fall des Vergleichs zweier Constellation-Maps, also zwei Hash-Mengen, wird hier bewertet, wie viele Kanten sich die beiden Maps positionsunabhängig teilen. Durch diese Unabhängigkeit reicht der JSI alleine nicht als Score aus, sodass nur in Kombination/Multiplikation mit dem S1 ein robuster Score entsteht, da beide zusammen ihre Schwächen aufheben. Der \ac{JSI} in \MyRef{fig:scoring} beträgt $\frac{4}{14} \approx 0.286$, da die Schnittmenge beider Hashmengen hier gleichzeitig den S1-Score bilden und die restlichen Hashes disjunkt zueinander sind. Der S1 wäre nur noch 3, wenn eine der markierten Kanten an einer anderen Position wäre, wobei der \ac{JSI} davon unberührt bliebe.
+                Dieser Index nimmt einen Wert von 0 an, wenn beide Mengen disjunkt sind, und nähert sich der 1 je größer die Schnittmenge ist. Im Fall des Vergleichs zweier \acp{CM}, also zwei Hash-Mengen, wird hier bewertet, wie viele Kanten sich die beiden \acp{CM} positionsunabhängig teilen. Durch diese Unabhängigkeit reicht der JSI alleine nicht als Score aus, sodass nur in Kombination/Multiplikation mit dem S1 ein robuster Score entsteht, da beide zusammen ihre Schwächen aufheben. Der \ac{JSI} in \MyRef{fig:scoring} beträgt $\frac{4}{14} \approx 0.286$, da die Schnittmenge beider Hashmengen hier gleichzeitig den S1-Score bilden und die restlichen Hashes disjunkt zueinander sind. Der S1 wäre nur noch 3, wenn eine der markierten Kanten an einer anderen Position wäre, wobei der \ac{JSI} davon unberührt bliebe.
 
             \item \PhantomSubSub[fam.matching]{Family-Matching}
                 \textbf{Family-Matching:}\ \ Eingabe ist eine \ac{CSV}-Tabelle mit der Zuordnung von Protein-ID und -familie (mittels Familien-ID). Die für das Matching verwendeten Hashes sind hier diejenigen, die sich alle Mitglieder einer Suchfamilie teilen. Die Idee dahinter ist, dass diese Hashes spezifisch für diese Familie, beziehungsweise deren Funktion ist. Als Bewertungsmaß wird dabei die Anzahl Hashes des Treffers verwendet, die mit den Familienhashes übereinstimmen, anstatt des S1 und \ac{JSI} aus dem Single-Protein-Matching. Der Vorteil dieses Ansatzes ist, dass durch die Reduktion der betrachteten Hashes die Laufzeit im Vergleich zum Single-Protein-Matching verringert wird. Denn für jeden Hash muss in der Datenbank durch alle Proteine iteriert werden, die ebenfalls diesen Hash haben. Je weniger Hashes also betrachtet werden, desto weniger Iterationen gibt es. Da die geteilten Hashes einer Familie in der Anzahl nur kleiner oder gleich der Anzahl Hashes des Familienmitglieds mit den wenigsten Hashes sein können, ist dieser Ansatz somit mindestens so schnell wie für das Single-Protein-Matching mit diesem kleinsten Mitglied.
@@ -326,7 +326,7 @@
             \end{split}
         \end{equation}
 
-        Selbst bei nur einer Frequenz pro Fenster wäre die Datenbank nach dieser Abschätzung doppelt so groß wie die Eingabe. Diesem Problem soll durch ein Sampling-Experiment abgeholfen werden. Darin wurden aus etwa 180 Millionen Sequenzen der UniRef90 Datenbank je ein zufälliges Fenster fester Größe für die \ac{STFT} ausgewählt, transformiert und die Signalstärken je Frequenz gemerkt. Um daraus eine Selektionsmethode abzuleiten, wurden die Grenzquantile einer jeden Frequenz ermittelt, um signifikant seltene Signalstärken zu ermitteln. Folglich war es möglich, für die \ac{CM} nur diejenigen Frequenzen zu behalten, welche in den Randbereichen der Signalstärken liegen, sodass nicht nur Signale infrage kommen, die für eine besonders starke Ausprägung eines Kidera-Faktors sprechen, sondern auch für den Fall der umgekehrten Ausprägung, wie z.B. Hydrophilie statt Hydrophobie.
+        Selbst bei nur einer Frequenz pro Fenster wäre die Datenbank nach dieser Abschätzung um ein Zwanzigfaches größer als die Eingabe. Diesem Problem soll durch ein Sampling-Experiment abgeholfen werden. Darin wurden aus etwa 180 Millionen Sequenzen der UniRef90 Datenbank je ein zufälliges Fenster fester Größe für die \ac{STFT} ausgewählt, transformiert und die Signalstärken je Frequenz gemerkt. Um daraus eine Selektionsmethode abzuleiten, wurden die Grenzquantile einer jeden Frequenz ermittelt, um signifikant seltene Signalstärken zu ermitteln. Folglich war es möglich, für die \ac{CM} nur diejenigen Frequenzen zu behalten, welche in den Randbereichen der Signalstärken liegen, sodass nicht nur Signale infrage kommen, die für eine besonders starke Ausprägung eines Kidera-Faktors sprechen, sondern auch für den Fall der umgekehrten Ausprägung, wie z.B. Hydrophilie statt Hydrophobie.
 
         \MyRef{alg:strukturdaten} wurde daher anschließend insofern angepasst, dass bei der Frequenz-Selektion in \MyRef{alg:strukturdaten:selection} die gewählten Frequenzen so ermittelt werden, dass je Grenzwert die Ausreißer ausgewählt werden, also einmal für den oberen Wert und dann für den unteren Wert, und aus diesen Ausreißermengen die Maxima selektiert werden. Zudem wird einem Hash je Frequenz noch mit einem Bit die Information hinzugefügt, ob die Amplitude besonders hoch oder niedrig ist, also aus dem oberen oder unteren Randbereich kommt.
 
@@ -340,7 +340,7 @@
     \end{experiment}
     \begin{experiment}{\acl{TZ}} % (fold)
         \label{exp:target_zone}
-        Die \ac{TZ} beschreibt in \MyRef{fig:hashing} die maximal mögliche Kantenlänge eines Hashes, also die Anzahl Nachfolgefenster, die für das Hashing herangezogen werden. Je größer die \ac{TZ}, desto näher kommt die Constellation-Map einem vollständigen Graphen, was die Datenbankgröße entscheidend beeinflusst. Da die \ac{TZ} mit 12 Bit (\MyRef{fig:hash}), also 4096, für Aminosäuresequenzen der \ac{TP} nahezu unbeschränkt ist (siehe \MyRef{fig:sequences}), wurde in diesem Experiment geprüft, wie wenige Bits ausreichen, um noch ein gutes Matching zu gewährleisten. Umgesetzt wurde dies in \RefAlgLine{alg:hashing}{target_zone}, wo über die Nachfolger iteriert wurde. Um die \ac{TZ} einzubeziehen, wurden die hard-coded $2^{12}$ mit einer zusätzlichen Variable zu $2^{targetZoneBits}$ erweitert. Als Selektiosmethode wurd der Ansatz aus \MyRef{exp:uniref90} verwendet.
+        Die \ac{TZ} beschreibt in \MyRef{fig:hashing} die maximal mögliche Kantenlänge eines Hashes, also die Anzahl Nachfolgefenster, die für das Hashing herangezogen werden. Je größer die \ac{TZ}, desto näher kommt die Constellation-Map einem vollständigen Graphen, was die Datenbankgröße entscheidend beeinflusst. Da die \ac{TZ} mit 12 Bit (\MyRef{fig:hash}), also 4096, für Aminosäuresequenzen der \ac{TP} nahezu unbeschränkt ist (siehe \MyRef{fig:sequences}), wurde in diesem Experiment geprüft, wie wenige Bits ausreichen, um noch ein gutes Matching zu gewährleisten. Umgesetzt wurde dies in \RefAlgLine{alg:hashing}{target_zone}, wo über die Nachfolger iteriert wurde. Um die \ac{TZ} einzubeziehen, wurden die hard-coded $2^{12}$ mit einer zusätzlichen Variable zu $2^{targetZoneBits}$ erweitert. Als Selektiosmethode wurde der Ansatz aus \MyRef{exp:uniref90} verwendet.
     \end{experiment}
     \begin{experiment}{Selection-Method} % (fold)
         \label{exp:selection_method}
