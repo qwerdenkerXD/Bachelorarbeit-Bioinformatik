@@ -1,0 +1,128 @@
+\documentclass[margin=0mm, innermargin=3cm, blockverticalspace=15mm, colspace=15mm, subcolspace=8mm, a0paper, titleinnsersep = 0pt]{tikzposter}
+\usepackage{graphicx} 
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage[ngerman]{babel}
+\usepackage{tikz}
+\tikzposterlatexaffectionproofoff %Tikzposter Wasserzeichen ausblenden
+\usetikzlibrary{babel}
+\setlength{\columnsep}{2cm}
+\usepackage[backend=biber,style=alphabetic,]{biblatex}
+
+\bibliography{Literatur}
+
+%Abbildungsreferenzen Deutsch
+\addto\captionsngerman{
+  \renewcommand{\figurename}{Abb.}
+  \renewcommand{\tablename}{Tab.}
+}
+\newcommand{\protfin}{prot-fin}
+\newcommand{\bottomnode}[2]{
+    \node[above right,
+        outer sep=0pt,
+        fill opacity=0,
+        line width=0mm,
+        text opacity=1,
+        minimum width=80cm,
+        minimum height=6cm,
+        align=center,font=\Huge,
+        draw=none,fill=white] at ([shift={(0.5*\pgflinewidth,0.5*\pgflinewidth)}]-40,#1){#2}
+}
+
+%Titel
+\title{\parbox{0.75\linewidth}{\centering \protfin \\ Das SHAZAM für Proteinerkennung?}}
+
+%Farbpalette in TH-Farbe von Originalvorlage
+\definecolorpalette{thpalette} {
+    \definecolor{thblue}{RGB}{0,91,153}
+}
+
+%Hintergrund: Rahmen etc.
+\definebackgroundstyle{frame}{
+    %Aussenrahmen
+    \draw[inner sep=0pt, line width=30pt, color=thblue, fill=white]
+    (-40,-57) rectangle (40, 57);
+    %Linien box Praxisphase von x,y
+    \draw[line width=15pt, color=thblue] (-40,45) -- (40,45);
+    \draw[line width=15pt, color=thblue] (-40,38) -- (40,38);
+    %Linien box Durchgefuehrt bei: Betrieb, Ort
+    % \draw[line width=15pt, color=thblue] (-40,-45) -- (40,-45);
+    \draw[line width=15pt, color=thblue] (-40,-51) -- (40,-51);
+}
+
+%Titel Style
+\definetitlestyle{thtitle}{
+    width=\paperwidth, roundedcorners=0, linewidth=0pt, innersep=1.5cm,
+    titletotopverticalspace=5cm, titletoblockverticalspace=7cm,
+    titlegraphictotitledistance=1pt, titletextscale=1
+}{}
+
+%Block Style
+\defineblockstyle{thblocks}{
+    titlewidthscale=0.9,
+    bodywidthscale=1,
+    titleleft,
+    titleoffsetx=0pt,
+    titleoffsety=3mm,
+    bodyoffsetx=0mm,
+    bodyoffsety=19mm,
+    bodyverticalshift=18mm,
+    roundedcorners=5,
+    linewidth=2pt,
+    titleinnersep=6mm,
+    bodyinnersep=1cm
+}{
+\draw[color=thblue, fill=blockbodybgcolor] (blockbody.south west)
+rectangle (blockbody.north east);
+\ifBlockHasTitle
+\draw[color=thblue, fill=thblue] (blocktitle.south west)
+rectangle (blocktitle.north east);
+\fi
+}
+\defineblockstyle{picture}{
+    titlewidthscale=0.9,
+    bodywidthscale=1,
+    titleleft,
+    titleoffsetx=0pt,
+    titleoffsety=0mm,
+    bodyoffsetx=0mm,
+    bodyoffsety=0mm,
+    bodyverticalshift=3mm,
+    roundedcorners=0,
+    linewidth=2pt,
+    titleinnersep=0mm,
+    bodyinnersep=0cm
+}{
+% \draw[color=thblue, fill=blockbodybgcolor] (blockbody.south west)
+% rectangle (blockbody.north east);
+% \ifBlockHasTitle
+% \draw[color=thblue, fill=thblue] (blocktitle.south west)
+% rectangle (blocktitle.north east);
+% \fi
+}
+
+%TH layout definieren
+\definelayouttheme{th}{
+    \usebackgroundstyle{frame}
+    \usecolorpalette{thpalette}
+    \usetitlestyle{thtitle}
+    \useblockstyle{thblocks}
+}
+
+\usetheme{th} 
+
+\begin{document}
+%Logos einfuegen
+% \node (betrieb) at (32, 51) {\includegraphics[width=10cm]{unilogo.png}};
+\node (thlogo) at (-28.5, 50.5) {\includegraphics[width=10cm]{unilogo.png}};
+
+%Praxisphase von Vorname Name
+\bottomnode{38.4}{Praxisphase von Franz-Eric Sill\\Durchgeführt bei: Prof. Asis Hallab, TH Bingen};
+
+%Durchgefuehrt bei Firma, Ort
+% \bottomnode{-51}{Durchgeführt bei: Prof. Asis Hallab, TH Bingen};
+
+%Studiengang Angewandte Bioinformatik
+\bottomnode{-57}{Studiengang Angewandte Bioinformatik};
+asd
+\maketitle[]
